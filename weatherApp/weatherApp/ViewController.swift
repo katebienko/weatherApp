@@ -1,5 +1,6 @@
 import UIKit
 import CoreLocation
+import FirebaseAnalytics
 
 class ViewController: UIViewController {
     
@@ -27,6 +28,9 @@ class ViewController: UIViewController {
         for name in countryNames {
             let newString = name.replacingOccurrences(of: " ", with: "%20")
             addCity(name: newString)
+            
+            //Analytics Event
+            //Analytics.logEvent("Init Screen", parameters: ["message" : "Firebase integrated"])
         }
         
         tableView.isHidden = true
