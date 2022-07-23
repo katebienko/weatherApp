@@ -1,2 +1,4 @@
 xcshareddata
 Xcuserdata
+*.DS_Store
+._*
