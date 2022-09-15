@@ -41,27 +41,12 @@ class ForecastViewController: UIViewController {
         daysOfWeekTable.separatorInset = .zero
     }
     
-    private func backgroundSunnyDay() {
-        let colorTop =  UIColor(red: 255.0/255.0, green: 198.0/255.0, blue: 0/255.0, alpha: 1.0).cgColor
-        let colorBottom = UIColor(red: 235.0/255.0, green: 115.0/255.0, blue: 32.0/255.0, alpha: 1.0).cgColor
-                       
+    private func sunnyOrRainyDayBg(colorTop: CGColor, colorBottom: CGColor) {
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = [colorTop, colorBottom]
         gradientLayer.locations = [0.0, 1.0]
         gradientLayer.frame = self.view.bounds
-                   
-        self.view.layer.insertSublayer(gradientLayer, at:0)
-    }
-    
-    private func backgroundRainyDay() {
-        let colorTop =  UIColor(red: 87.0/255.0, green: 154.0/255.0, blue: 230.0/255.0, alpha: 1.0).cgColor
-        let colorBottom = UIColor(red: 55.0/255.0, green: 70.0/255.0, blue: 131.0/255.0, alpha: 1.0).cgColor
-                       
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [colorTop, colorBottom]
-        gradientLayer.locations = [0.0, 1.0]
-        gradientLayer.frame = self.view.bounds
-                   
+        
         self.view.layer.insertSublayer(gradientLayer, at:0)
     }
     
@@ -84,10 +69,11 @@ class ForecastViewController: UIViewController {
                             setAllImages()
                             
                             if forecastResponse.current.condition.text == "Sunny" && forecastResponse.current.temp_c >= 15 || forecastResponse.current.condition.text == "Clear" && forecastResponse.current.temp_c >= 15 {
-                                backgroundSunnyDay()
+                                
+                                sunnyOrRainyDayBg(colorTop: UIColor(red: 255.0/255.0, green: 198.0/255.0, blue: 0/255.0, alpha: 1.0).cgColor, colorBottom: UIColor(red: 235.0/255.0, green: 115.0/255.0, blue: 32.0/255.0, alpha: 1.0).cgColor)
                             }
                             else {
-                                backgroundRainyDay()
+                               sunnyOrRainyDayBg(colorTop: UIColor(red: 87.0/255.0, green: 154.0/255.0, blue: 230.0/255.0, alpha: 1.0).cgColor, colorBottom: UIColor(red: 55.0/255.0, green: 70.0/255.0, blue: 131.0/255.0, alpha: 1.0).cgColor)
                             }
                             
                             
@@ -197,16 +183,17 @@ extension ForecastViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-     //   let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
         switch daysOfWeek[indexPath.item] {
         case daysOfWeek[indexPath.item]:
             print("Open new page")
-//            if let forecastViewController = storyboard.instantiateViewController(identifier: "ForecastViewController") as? ForecastViewController {
-//                forecastViewController.modalPresentationStyle = .fullScreen
-//              //  forecastViewController.myUrl = temperaturesCountry[indexPath.item]
-//                navigationController?.pushViewController(forecastViewController, animated: true)
-//            }
+            
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            
+            if let aboutDayViewController = storyboard.instantiateViewController(identifier: "AboutDayViewController") as? AboutDayViewController {
+                aboutDayViewController.modalPresentationStyle = .fullScreen
+              //  forecastViewController.myUrl = temperaturesCountry[indexPath.item]
+                navigationController?.pushViewController(aboutDayViewController, animated: true)
+            }
         default:
             print("not found")
         }
