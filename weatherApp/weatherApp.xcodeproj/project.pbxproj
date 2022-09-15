@@ -84,6 +84,23 @@
 			path = xib;
 			sourceTree = "<group>";
 		};
+		4A4B93EE28D36A1500FC4C77 /* cells */ = {
+			isa = PBXGroup;
+			children = (
+				4A5D6559286B22DB00A31ECA /* UICollectionViewCell+ReuseIdentifier.swift */,
+				4AC1E5D9286A397300B165B1 /* CitiesCollectionViewCell.swift */,
+				4A1D8B8128D2DAA400969B8B /* DaysTableViewCell.swift */,
+			);
+			path = cells;
+			sourceTree = "<group>";
+		};
+		4A4B93F128D36A5800FC4C77 /* model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
 		4A86FCDC286443B900DF09FA = {
 			isa = PBXGroup;
 			children = (
@@ -107,17 +124,16 @@
 			children = (
 				4A0AD1AD28D2434E00A89032 /* json */,
 				4A0AD1B428D243C400A89032 /* xib */,
-				4A86FCEE286443B900DF09FA /* Main.storyboard */,
+				4A4B93EE28D36A1500FC4C77 /* cells */,
+				4A4B93F128D36A5800FC4C77 /* model */,
+				4A86FCE8286443B900DF09FA /* AppDelegate.swift */,
+				4A86FCEC286443B900DF09FA /* ViewController.swift */,
+				4A5D0BD62864AC9D00977A9E /* ForecastViewController.swift */,
 				4AB4B4C728D3501600F0C51E /* AboutDayViewController.swift */,
 				4A5D0BD128649A0C00977A9E /* ForecastsResponse.swift */,
 				4A86FCEA286443B900DF09FA /* SceneDelegate.swift */,
-				4A86FCE8286443B900DF09FA /* AppDelegate.swift */,
-				4A86FCEC286443B900DF09FA /* ViewController.swift */,
-				4A5D6559286B22DB00A31ECA /* UICollectionViewCell+ReuseIdentifier.swift */,
-				4AC1E5D9286A397300B165B1 /* CitiesCollectionViewCell.swift */,
-				4A1D8B8128D2DAA400969B8B /* DaysTableViewCell.swift */,
-				4A5D0BD62864AC9D00977A9E /* ForecastViewController.swift */,
 				4A86FCF1286443BB00DF09FA /* Assets.xcassets */,
+				4A86FCEE286443B900DF09FA /* Main.storyboard */,
 				4A86FCF3286443BB00DF09FA /* LaunchScreen.storyboard */,
 				4A83A1532884581400616B35 /* GoogleService-Info.plist */,
 				4A86FCF6286443BB00DF09FA /* Info.plist */,

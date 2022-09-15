@@ -75,8 +75,7 @@ class ForecastViewController: UIViewController {
                             else {
                                sunnyOrRainyDayBg(colorTop: UIColor(red: 87.0/255.0, green: 154.0/255.0, blue: 230.0/255.0, alpha: 1.0).cgColor, colorBottom: UIColor(red: 55.0/255.0, green: 70.0/255.0, blue: 131.0/255.0, alpha: 1.0).cgColor)
                             }
-                            
-                            
+                                                        
                             cityNameLabel.text = "\(forecastResponse.location.name)"
                             degreesLabel.text = String(Int(forecastResponse.current.temp_c)) + "°"
                             windSpeed.text = String("\(forecastResponse.current.wind_mph) km/h")
@@ -92,7 +91,6 @@ class ForecastViewController: UIViewController {
                             minTemp.append("\(forecastResponse.forecast.forecastday[0].day.mintemp_c)")
                             minTemp.append("\(forecastResponse.forecast.forecastday[1].day.mintemp_c)")
                             minTemp.append("\(forecastResponse.forecast.forecastday[2].day.mintemp_c)")
-
                             
                             switch forecastResponse.current.condition.text {
                             case "Sunny", "Clear":
@@ -162,7 +160,6 @@ class ForecastViewController: UIViewController {
     }
 }
 
-
 extension ForecastViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
@@ -185,13 +182,14 @@ extension ForecastViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch daysOfWeek[indexPath.item] {
         case daysOfWeek[indexPath.item]:
-            print("Open new page")
-            
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             
             if let aboutDayViewController = storyboard.instantiateViewController(identifier: "AboutDayViewController") as? AboutDayViewController {
                 aboutDayViewController.modalPresentationStyle = .fullScreen
-              //  forecastViewController.myUrl = temperaturesCountry[indexPath.item]
+                
+                aboutDayViewController.myUrl = myUrl
+                aboutDayViewController.indexPath = indexPath.row
+                
                 navigationController?.pushViewController(aboutDayViewController, animated: true)
             }
         default:
