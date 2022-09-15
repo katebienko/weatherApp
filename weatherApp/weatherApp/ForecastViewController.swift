@@ -71,9 +71,13 @@ class ForecastViewController: UIViewController {
                             if forecastResponse.current.condition.text == "Sunny" && forecastResponse.current.temp_c >= 15 || forecastResponse.current.condition.text == "Clear" && forecastResponse.current.temp_c >= 15 {
                                 
                                 sunnyOrRainyDayBg(colorTop: UIColor(red: 255.0/255.0, green: 198.0/255.0, blue: 0/255.0, alpha: 1.0).cgColor, colorBottom: UIColor(red: 235.0/255.0, green: 115.0/255.0, blue: 32.0/255.0, alpha: 1.0).cgColor)
+                                
+                                UserDefaults.standard.set(true, forKey: "bg")
                             }
                             else {
                                sunnyOrRainyDayBg(colorTop: UIColor(red: 87.0/255.0, green: 154.0/255.0, blue: 230.0/255.0, alpha: 1.0).cgColor, colorBottom: UIColor(red: 55.0/255.0, green: 70.0/255.0, blue: 131.0/255.0, alpha: 1.0).cgColor)
+                                
+                                UserDefaults.standard.set(false, forKey: "bg")
                             }
                                                         
                             cityNameLabel.text = "\(forecastResponse.location.name)"

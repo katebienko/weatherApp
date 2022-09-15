@@ -34,4 +34,7 @@ struct Forecastday: Decodable {
 struct Day: Decodable {
     let maxtemp_c: Double
     let mintemp_c: Double
+    let avgtemp_c: Double
+    let maxwind_kph: Double
+    let totalprecip_mm: Double
 }
