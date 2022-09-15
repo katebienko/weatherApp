@@ -135,7 +135,7 @@ extension ViewController: UICollectionViewDataSource {
             if let forecastViewController = storyboard.instantiateViewController(identifier: "ForecastViewController") as? ForecastViewController {
                 forecastViewController.modalPresentationStyle = .fullScreen
                 forecastViewController.myUrl = temperaturesCountry[indexPath.item]
-                navigationController?.pushViewController(forecastViewController, animated: false)
+                navigationController?.pushViewController(forecastViewController, animated: true)
             }
         default:
             print("not found")

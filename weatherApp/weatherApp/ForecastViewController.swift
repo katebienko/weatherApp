@@ -5,6 +5,7 @@ class ForecastViewController: UIViewController {
     var myUrl = URL(string: "")
     var daysOfWeek: [String] = []
     var maxTemp: [String] = []
+    var minTemp: [String] = []
     
     @IBOutlet private var bgView: UIView!
     @IBOutlet private weak var cityNameLabel: UILabel!
@@ -28,12 +29,16 @@ class ForecastViewController: UIViewController {
         super.viewDidLoad()
         
         cityForecast()
+        tableViewSettings()
         
         backButton.setImage(UIImage(named: "arrow.svg"), for: .normal)
-        
+    }
+    
+    private func tableViewSettings() {
         daysOfWeekTable.delegate = self
         daysOfWeekTable.dataSource = self
         daysOfWeekTable.separatorColor = UIColor.white
+        daysOfWeekTable.separatorInset = .zero
     }
     
     private func backgroundSunnyDay() {
@@ -94,19 +99,14 @@ class ForecastViewController: UIViewController {
                             lowerTemperatureLabel.text = String("\(forecastResponse.forecast.forecastday[0].day.mintemp_c)°")
                             visibleLabel.text = String("\(forecastResponse.current.vis_km) km")
                             
-                           
                             maxTemp.append("\(forecastResponse.forecast.forecastday[0].day.maxtemp_c)")
                             maxTemp.append("\(forecastResponse.forecast.forecastday[1].day.maxtemp_c)")
                             maxTemp.append("\(forecastResponse.forecast.forecastday[2].day.maxtemp_c)")
                             
-                            
-//                            lowTemperatureLabel.text = String("\(forecastResponse.forecast.forecastday[0].day.mintemp_c)°")
-//
-//
-//                            lowTemperature2Label.text = String("\(forecastResponse.forecast.forecastday[1].day.mintemp_c)°")
-//
-//                            lowTemperature3Label.text = String("\(forecastResponse.forecast.forecastday[2].day.mintemp_c)°")
-                  
+                            minTemp.append("\(forecastResponse.forecast.forecastday[0].day.mintemp_c)")
+                            minTemp.append("\(forecastResponse.forecast.forecastday[1].day.mintemp_c)")
+                            minTemp.append("\(forecastResponse.forecast.forecastday[2].day.mintemp_c)")
+
                             
                             switch forecastResponse.current.condition.text {
                             case "Sunny", "Clear":
@@ -124,7 +124,6 @@ class ForecastViewController: UIViewController {
                             default:
                                 print(forecastResponse.current.condition.text)
                             }
-                            
                             
                             let todayDay = getDayOfWeek(forecastResponse.forecast.forecastday[0].date, format:"yyyy-MM-dd")
                             todaysDay.text = todayDay
@@ -173,7 +172,7 @@ class ForecastViewController: UIViewController {
     }
     
     @IBAction func getBackAction(_ sender: Any) {
-        navigationController?.popToRootViewController(animated: false)
+        navigationController?.popToRootViewController(animated: true)
     }
 }
 
@@ -191,8 +190,25 @@ extension ForecastViewController: UITableViewDataSource, UITableViewDelegate {
         } else {
             cell.labelDay.text = daysOfWeek[indexPath.row]
             cell.maxTemperature.text = "\(maxTemp[indexPath.row])°"
+            cell.minTemperature.text = "\(minTemp[indexPath.row])°"
         }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+     //   let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        switch daysOfWeek[indexPath.item] {
+        case daysOfWeek[indexPath.item]:
+            print("Open new page")
+//            if let forecastViewController = storyboard.instantiateViewController(identifier: "ForecastViewController") as? ForecastViewController {
+//                forecastViewController.modalPresentationStyle = .fullScreen
+//              //  forecastViewController.myUrl = temperaturesCountry[indexPath.item]
+//                navigationController?.pushViewController(forecastViewController, animated: true)
+//            }
+        default:
+            print("not found")
+        }
     }
 }

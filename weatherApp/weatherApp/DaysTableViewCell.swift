@@ -11,13 +11,15 @@ class DaysTableViewCell: UITableViewCell {
 
     @IBOutlet weak var labelDay: UILabel!
     @IBOutlet weak var maxTemperature: UILabel!
+    @IBOutlet weak var minTemperature: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
     }
     
-    func setup(dayOfWeek: String, temperatureMax: String) {
+    func setup(dayOfWeek: String, temperatureMax: String, temperatureMin: String) {
         labelDay.text = dayOfWeek
         maxTemperature.text = temperatureMax
+        minTemperature.text = temperatureMin
     }
 }
