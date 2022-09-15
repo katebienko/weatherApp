@@ -8,7 +8,6 @@ class ViewController: UIViewController {
     
     var countryNames: [String] = ["London", "Minsk"]
     var temperaturesCountry: [URL] = [].compactMap { URL(string: $0) }
-    
     var allCities: [String] = []
     var filterData: [String]!
     

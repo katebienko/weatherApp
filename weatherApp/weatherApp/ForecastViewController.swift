@@ -2,20 +2,15 @@ import UIKit
 
 class ForecastViewController: UIViewController {
     
+    var myUrl = URL(string: "")
+    var daysOfWeek: [String] = []
+    var maxTemp: [String] = []
+    
     @IBOutlet private var bgView: UIView!
     @IBOutlet private weak var cityNameLabel: UILabel!
     @IBOutlet private weak var degreesLabel: UILabel!
     @IBOutlet private weak var windSpeed: UILabel!
     @IBOutlet private weak var imageWeather: UIImageView!
-    @IBOutlet private weak var dateLabel: UILabel!
-    @IBOutlet private weak var date2Label: UILabel!
-    @IBOutlet private weak var date3Label: UILabel!
-    @IBOutlet private weak var temperatureLabel: UILabel!
-    @IBOutlet private weak var lowTemperatureLabel: UILabel!
-    @IBOutlet private weak var lowTemperature2Label: UILabel!
-    @IBOutlet private weak var lowTemperature3Label: UILabel!
-    @IBOutlet private weak var temperature2Label: UILabel!
-    @IBOutlet private weak var temperature3Label: UILabel!
     @IBOutlet private weak var humidityLabel: UILabel!
     @IBOutlet private weak var todaysDay: UILabel!
     @IBOutlet private weak var highterTemperatureLabel: UILabel!
@@ -27,8 +22,7 @@ class ForecastViewController: UIViewController {
     @IBOutlet private weak var temperatureUpImage: UIImageView!
     @IBOutlet private weak var temperatureDownImage: UIImageView!
     @IBOutlet private weak var backButton: UIButton!
-    
-    var myUrl = URL(string: "")
+    @IBOutlet private weak var daysOfWeekTable: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +30,10 @@ class ForecastViewController: UIViewController {
         cityForecast()
         
         backButton.setImage(UIImage(named: "arrow.svg"), for: .normal)
+        
+        daysOfWeekTable.delegate = self
+        daysOfWeekTable.dataSource = self
+        daysOfWeekTable.separatorColor = UIColor.white
     }
     
     private func backgroundSunnyDay() {
@@ -78,7 +76,6 @@ class ForecastViewController: UIViewController {
                         let forecastResponse = try JSONDecoder().decode(ForecastsResponse.self, from: data)
                         
                         DispatchQueue.main.async { [self] in
-                            
                             setAllImages()
                             
                             if forecastResponse.current.condition.text == "Sunny" && forecastResponse.current.temp_c >= 15 || forecastResponse.current.condition.text == "Clear" && forecastResponse.current.temp_c >= 15 {
@@ -97,13 +94,18 @@ class ForecastViewController: UIViewController {
                             lowerTemperatureLabel.text = String("\(forecastResponse.forecast.forecastday[0].day.mintemp_c)°")
                             visibleLabel.text = String("\(forecastResponse.current.vis_km) km")
                             
-                            temperatureLabel.text = String("\(forecastResponse.forecast.forecastday[0].day.maxtemp_c)°")
-                            temperature2Label.text = String("\(forecastResponse.forecast.forecastday[1].day.maxtemp_c)°")
-                            temperature3Label.text = String("\(forecastResponse.forecast.forecastday[2].day.maxtemp_c)°")
+                           
+                            maxTemp.append("\(forecastResponse.forecast.forecastday[0].day.maxtemp_c)")
+                            maxTemp.append("\(forecastResponse.forecast.forecastday[1].day.maxtemp_c)")
+                            maxTemp.append("\(forecastResponse.forecast.forecastday[2].day.maxtemp_c)")
                             
-                            lowTemperatureLabel.text = String("\(forecastResponse.forecast.forecastday[0].day.mintemp_c)°")
-                            lowTemperature2Label.text = String("\(forecastResponse.forecast.forecastday[1].day.mintemp_c)°")
-                            lowTemperature3Label.text = String("\(forecastResponse.forecast.forecastday[2].day.mintemp_c)°")
+                            
+//                            lowTemperatureLabel.text = String("\(forecastResponse.forecast.forecastday[0].day.mintemp_c)°")
+//
+//
+//                            lowTemperature2Label.text = String("\(forecastResponse.forecast.forecastday[1].day.mintemp_c)°")
+//
+//                            lowTemperature3Label.text = String("\(forecastResponse.forecast.forecastday[2].day.mintemp_c)°")
                   
                             
                             switch forecastResponse.current.condition.text {
@@ -125,14 +127,14 @@ class ForecastViewController: UIViewController {
                             
                             
                             let todayDay = getDayOfWeek(forecastResponse.forecast.forecastday[0].date, format:"yyyy-MM-dd")
-                            dateLabel.text = todayDay
                             todaysDay.text = todayDay
+                            daysOfWeek.append(todayDay!)
                             
                             let tomorrowDay = getDayOfWeek(forecastResponse.forecast.forecastday[1].date, format:"yyyy-MM-dd")
-                            date2Label.text = tomorrowDay
+                            daysOfWeek.append(tomorrowDay!)
                             
                             let dayAfterTomorrow = getDayOfWeek(forecastResponse.forecast.forecastday[2].date, format:"yyyy-MM-dd")
-                            date3Label.text = dayAfterTomorrow
+                            daysOfWeek.append(dayAfterTomorrow!)
                         }
                     } catch {
                         debugPrint(error.localizedDescription)
@@ -172,5 +174,25 @@ class ForecastViewController: UIViewController {
     
     @IBAction func getBackAction(_ sender: Any) {
         navigationController?.popToRootViewController(animated: false)
+    }
+}
+
+
+extension ForecastViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 3
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = daysOfWeekTable.dequeueReusableCell(withIdentifier: "daysCell", for: indexPath) as! DaysTableViewCell
+        
+        if daysOfWeek .isEmpty {
+            daysOfWeekTable.reloadData()
+        } else {
+            cell.labelDay.text = daysOfWeek[indexPath.row]
+            cell.maxTemperature.text = "\(maxTemp[indexPath.row])°"
+        }
+        
+        return cell
     }
 }
