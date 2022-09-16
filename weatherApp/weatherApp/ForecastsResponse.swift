@@ -1,16 +1,16 @@
 import Foundation
 
-struct ForecastsResponse: Decodable {
+struct ForecastsResponse: Codable {
     let location: (Location)
     let current: (Current)
     let forecast: (Forecast)
 }
 
-struct Location: Decodable {
+struct Location: Codable {
     let name: String
 }
 
-struct Current: Decodable {
+struct Current: Codable {
     let temp_c: Double
     let wind_mph: Double
     let humidity: Int
@@ -18,20 +18,20 @@ struct Current: Decodable {
     let condition: (Condition)
 }
 
-struct Condition: Decodable {
+struct Condition: Codable {
     let text: String
 }
 
-struct Forecast: Decodable {
+struct Forecast: Codable {
     let forecastday: [(Forecastday)]
 }
 
-struct Forecastday: Decodable {
+struct Forecastday: Codable {
     let date: String
     let day: (Day)
 }
 
-struct Day: Decodable {
+struct Day: Codable {
     let maxtemp_c: Double
     let mintemp_c: Double
     let avgtemp_c: Double
