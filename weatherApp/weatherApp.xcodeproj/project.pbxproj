@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -130,8 +130,8 @@
 				4A4B93F128D36A5800FC4C77 /* model */,
 				4A86FCE8286443B900DF09FA /* AppDelegate.swift */,
 				4A86FCEC286443B900DF09FA /* ViewController.swift */,
-				4AEFC82B28D39D4700466BBD /* Reachability.swift */,
 				4A5D0BD62864AC9D00977A9E /* ForecastViewController.swift */,
+				4AEFC82B28D39D4700466BBD /* Reachability.swift */,
 				4AB4B4C728D3501600F0C51E /* AboutDayViewController.swift */,
 				4A5D0BD128649A0C00977A9E /* ForecastsResponse.swift */,
 				4A86FCEA286443B900DF09FA /* SceneDelegate.swift */,

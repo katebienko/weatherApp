@@ -10,6 +10,8 @@ class ViewController: UIViewController {
     let decoder = JSONDecoder() // превращает данные в объект
     let encoder = JSONEncoder() // превращает объект в данные
     
+    var isConnection: Bool = true
+
     let documentFolderURL: URL = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
     lazy var jsonFolderURL: URL = documentFolderURL.appendingPathComponent("jsons")
     
@@ -37,10 +39,12 @@ class ViewController: UIViewController {
         checkConnection()
         deleteSpacing()
         tableViewSettings()
+        
+        loadListFiles()
         setupCollectionView()
     }
     
-    private func openJSONfromFile () {
+    private func openJSONfromFile() {
         do {
             let filesName = try FileManager.default.contentsOfDirectory(atPath: jsonFolderURL.path)
 
@@ -48,16 +52,15 @@ class ViewController: UIViewController {
                 let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
                 urlsToJSON.append(fileURL)
                 
-                do {
-                    let data = try Data(contentsOf: fileURL)
-                   // let json = try JSONSerialization.jsonObject(with: data)
-                    
-                    let forecastResponse = try JSONDecoder().decode(ForecastsResponse.self, from: data)
-    
-                    let tempInt = String(Int(forecastResponse.current.temp_c)) + "°"
-                   // print(tempInt)
-                   // cell.setup(countryNames: "\(countryNames[indexPath.item])", temperaturesCountry: tempInt)
-                }
+//                do {
+//                    let data = try Data(contentsOf: fileURL)
+//                   // let json = try JSONSerialization.jsonObject(with: data)
+//
+//                    let forecastResponse = try JSONDecoder().decode(ForecastsResponse.self, from: data)
+//
+//                  //  let tempInt = String(Int(forecastResponse.current.temp_c)) + "°"
+//                   // cell.setup(countryNames: "\(countryNames[indexPath.item])", temperaturesCountry: tempInt)
+//                }
             }
         } catch {
             print(error.localizedDescription)
@@ -85,15 +88,18 @@ class ViewController: UIViewController {
     
     private func checkConnection() {
         if Reachability.isConnectedToNetwork(){
+            isConnection = true
+
             locationManager.requestAlwaysAuthorization()
             locationManager.delegate = self
             locationManager.distanceFilter = 1
         }
         else {
+            isConnection = false
             let alert = UIAlertController(title: "Internet Connection is not Available!", message: "Do you want to load last data?", preferredStyle: UIAlertController.Style.alert)
                 
-            alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [self] (action) in
-                openJSONfromFile()
+            alert.addAction(UIAlertAction(title: "Add", style: .cancel, handler: { [] (action) in
+                
             }))
                 
             self.present(alert, animated: true, completion: nil)
@@ -130,6 +136,33 @@ class ViewController: UIViewController {
             }
         }
     }
+    
+    private func loadListFiles() {
+        if isConnection == false {
+            let filesName = try? FileManager.default.contentsOfDirectory(atPath: jsonFolderURL.path)
+
+            for jsonFile in filesName! {
+                let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
+                urlsToJSON.append(fileURL)
+            }
+
+        }
+    }
+    
+    private func saveCityJSON(data: Data) {
+        let json = try? JSONSerialization.jsonObject(with: data)
+        let forecastResponse = try? JSONDecoder().decode(ForecastsResponse.self, from: data)
+        
+        do {
+            let fileURL = self.jsonFolderURL.appendingPathComponent("savedCities\(String(describing: forecastResponse?.location.name)).json")
+              //  print(fileURL.path)
+
+            try JSONSerialization.data(withJSONObject: json!, options: .prettyPrinted).write(to: fileURL)
+            
+        } catch {
+            print(error)
+        }
+    }
 
     private func setupCollectionView() {
         let key = CitiesCollectionViewCell.reuseIdentifier
@@ -144,6 +177,10 @@ class ViewController: UIViewController {
         let newString = name.replacingOccurrences(of: " ", with: "%20")
         temperaturesCountry.append(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(newString)&days=7")!)
     }
+    
+    private func infoNoIndernet() {
+        
+    }
 }
 
 extension ViewController: UICollectionViewDataSource {
@@ -156,58 +193,36 @@ extension ViewController: UICollectionViewDataSource {
             fatalError()
         }
         
-        let url = temperaturesCountry[indexPath.item]
-        let session = URLSession(configuration: .default)
-        session.dataTask(with: url) { (data, response, error) in
+        if isConnection == true {
+            let url = temperaturesCountry[indexPath.item]
+            let session = URLSession(configuration: .default)
+            session.dataTask(with: url) { (data, response, error) in
 
-            guard let data = data else { return }
-
-            do {
-                let forecastResponse = try JSONDecoder().decode(ForecastsResponse.self, from: data)
-                let json = try? JSONSerialization.jsonObject(with: data)
-
+                guard let data = data else { return }
+                self.saveCityJSON(data: data)
+                
                 do {
-                    for i in self.countryNames {
-                        let fileURL = self.jsonFolderURL.appendingPathComponent("savedCities\(i).json")
-                        // print(fileURL.path)
-
-                        try JSONSerialization.data(withJSONObject: json!, options: .prettyPrinted).write(to: fileURL)
+                    let forecastResponse = try JSONDecoder().decode(ForecastsResponse.self, from: data)
+                    
+                    DispatchQueue.main.sync { [self] in
+                        let tempInt = String(Int(forecastResponse.current.temp_c)) + "°"
+                        cell.setup(countryNames: "\(countryNames[indexPath.item])", temperaturesCountry: tempInt)
                     }
-                } catch {
-                    print(error)
                 }
-
-                DispatchQueue.main.sync { [self] in
-                    let tempInt = String(Int(forecastResponse.current.temp_c)) + "°"
-                    cell.setup(countryNames: "\(countryNames[indexPath.item])", temperaturesCountry: tempInt)
-                }
-                }
-            catch {
-                    debugPrint(error)
-                }
-            }.resume()
-        
-        
-        
-           
-//        let filesName = try? FileManager.default.contentsOfDirectory(atPath: jsonFolderURL.path)
-//
-//        for jsonFile in filesName! {
-//            let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
-//            urlsToJSON.append(fileURL)
-//        }
-//
-//        let data = try? Data(contentsOf: urlsToJSON[indexPath.item])
-//        let json = try? JSONSerialization.jsonObject(with: data!)
-//
-//        let forecastResponse = try? JSONDecoder().decode(ForecastsResponse.self, from: data!)
-//        let tempInt = String(Int(forecastResponse!.current.temp_c)) + "°"
-//
-//        cell.setup(countryNames: "\(countryNames[indexPath.item])", temperaturesCountry: tempInt)
-        
-        
-        
+                catch {
+                        debugPrint(error)
+                    }
+                }.resume()
             
+        } else {
+            
+            let data = try! Data(contentsOf: urlsToJSON[indexPath.item])
+
+            let forecastResponse = try? JSONDecoder().decode(ForecastsResponse.self, from: data)
+            
+            let tempInt = String(Int(forecastResponse!.current.temp_c)) + "°"
+            cell.setup(countryNames: "\(forecastResponse!.location.name)", temperaturesCountry: tempInt)
+        }
         
         cell.layer.cornerRadius = 10
         return cell
@@ -218,9 +233,16 @@ extension ViewController: UICollectionViewDataSource {
         
         if let forecastViewController = storyboard.instantiateViewController(identifier: "ForecastViewController") as? ForecastViewController {
                 forecastViewController.modalPresentationStyle = .fullScreen
+            
+            
+            if isConnection == true {
                 forecastViewController.myUrl = temperaturesCountry[indexPath.item]
-                navigationController?.pushViewController(forecastViewController, animated: true)
+            } else {
+                forecastViewController.myUrl = urlsToJSON[indexPath.item]
             }
+            
+            navigationController?.pushViewController(forecastViewController, animated: true)
+        }
     }
 }
 
@@ -245,7 +267,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
         return filterData.count
-        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
