@@ -41,7 +41,7 @@ class ViewController: UIViewController {
         tableViewSettings()
         
         loadListFiles()
-        setupCollectionView()
+       
     }
     
     private func openJSONfromFile() {
@@ -51,16 +51,6 @@ class ViewController: UIViewController {
             for jsonFile in filesName {
                 let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
                 urlsToJSON.append(fileURL)
-                
-//                do {
-//                    let data = try Data(contentsOf: fileURL)
-//                   // let json = try JSONSerialization.jsonObject(with: data)
-//
-//                    let forecastResponse = try JSONDecoder().decode(ForecastsResponse.self, from: data)
-//
-//                  //  let tempInt = String(Int(forecastResponse.current.temp_c)) + "°"
-//                   // cell.setup(countryNames: "\(countryNames[indexPath.item])", temperaturesCountry: tempInt)
-//                }
             }
         } catch {
             print(error.localizedDescription)
@@ -89,6 +79,8 @@ class ViewController: UIViewController {
     private func checkConnection() {
         if Reachability.isConnectedToNetwork(){
             isConnection = true
+            
+            setupCollectionView()
 
             locationManager.requestAlwaysAuthorization()
             locationManager.delegate = self
@@ -99,7 +91,7 @@ class ViewController: UIViewController {
             let alert = UIAlertController(title: "Internet Connection is not Available!", message: "Do you want to load last data?", preferredStyle: UIAlertController.Style.alert)
                 
             alert.addAction(UIAlertAction(title: "Add", style: .cancel, handler: { [] (action) in
-                
+                self.setupCollectionView()
             }))
                 
             self.present(alert, animated: true, completion: nil)
@@ -233,7 +225,6 @@ extension ViewController: UICollectionViewDataSource {
         
         if let forecastViewController = storyboard.instantiateViewController(identifier: "ForecastViewController") as? ForecastViewController {
                 forecastViewController.modalPresentationStyle = .fullScreen
-            
             
             if isConnection == true {
                 forecastViewController.myUrl = temperaturesCountry[indexPath.item]
