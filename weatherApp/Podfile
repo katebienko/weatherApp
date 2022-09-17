@@ -4,6 +4,4 @@
 target 'weatherApp' do
   use_frameworks!
 
-  pod 'FirebaseAnalytics'
-
 end

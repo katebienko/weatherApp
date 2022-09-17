@@ -10,7 +10,12 @@ class ViewController: UIViewController {
     let decoder = JSONDecoder() // превращает данные в объект
     let encoder = JSONEncoder() // превращает объект в данные
     
+    let documentFolderURL: URL = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+    lazy var jsonFolderURL: URL = documentFolderURL.appendingPathComponent("jsons")
+    
     var countryNames: [String] = UserDefaults.standard.stringArray(forKey: "key") ?? []
+    var urlsToJSON: [URL] = []
+    
     var temperaturesCountry: [URL] = [].compactMap { URL(string: $0) }
     var allCities: [String] = []
     var filterData: [String]!
@@ -22,17 +27,41 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        if FileManager.default.fileExists(atPath: jsonFolderURL.path) == false {
+            try? FileManager.default.createDirectory(at: jsonFolderURL, withIntermediateDirectories: false)
+        }
+        
+        loadCitiesForSearchJSON()
         backgroundView()
         checkConnection()
         deleteSpacing()
         tableViewSettings()
-        
-        searchBar.delegate = self
-        filterData = allCities
-       
         setupCollectionView()
-        loadCitiesJSON()
+    }
+    
+    private func openJSONfromFile () {
+        do {
+            let filesName = try FileManager.default.contentsOfDirectory(atPath: jsonFolderURL.path)
+
+            for jsonFile in filesName {
+                let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
+                urlsToJSON.append(fileURL)
+                
+                do {
+                    let data = try Data(contentsOf: fileURL)
+                   // let json = try JSONSerialization.jsonObject(with: data)
+                    
+                    let forecastResponse = try JSONDecoder().decode(ForecastsResponse.self, from: data)
+    
+                    let tempInt = String(Int(forecastResponse.current.temp_c)) + "°"
+                   // print(tempInt)
+                   // cell.setup(countryNames: "\(countryNames[indexPath.item])", temperaturesCountry: tempInt)
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
     private func backgroundView() {
@@ -63,8 +92,8 @@ class ViewController: UIViewController {
         else {
             let alert = UIAlertController(title: "Internet Connection is not Available!", message: "Do you want to load last data?", preferredStyle: UIAlertController.Style.alert)
                 
-            alert.addAction(UIAlertAction(title: "Add", style: .default, handler: {  (action) in
-                print("ADD")
+            alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [self] (action) in
+                openJSONfromFile()
             }))
                 
             self.present(alert, animated: true, completion: nil)
@@ -75,9 +104,12 @@ class ViewController: UIViewController {
         tableView.isHidden = true
         tableView.delegate = self
         tableView.dataSource = self
+        
+        searchBar.delegate = self
+        filterData = allCities
     }
     
-    private func loadCitiesJSON() {
+    private func loadCitiesForSearchJSON() {
         if let path = Bundle.main.path(forResource: "json_file", ofType: nil) {
             let url = URL(fileURLWithPath: path)
             do {
@@ -127,42 +159,55 @@ extension ViewController: UICollectionViewDataSource {
         let url = temperaturesCountry[indexPath.item]
         let session = URLSession(configuration: .default)
         session.dataTask(with: url) { (data, response, error) in
-                 
+
             guard let data = data else { return }
-            
+
             do {
                 let forecastResponse = try JSONDecoder().decode(ForecastsResponse.self, from: data)
-               
                 let json = try? JSONSerialization.jsonObject(with: data)
-                do {
-                    let fileURL = try FileManager.default
-                        .url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-                        .appendingPathComponent("savedCities.json")
-                    print(fileURL.path)
 
-                    try JSONSerialization.data(withJSONObject: json!, options: .prettyPrinted)
-                        .write(to: fileURL)
+                do {
+                    for i in self.countryNames {
+                        let fileURL = self.jsonFolderURL.appendingPathComponent("savedCities\(i).json")
+                        // print(fileURL.path)
+
+                        try JSONSerialization.data(withJSONObject: json!, options: .prettyPrinted).write(to: fileURL)
+                    }
                 } catch {
                     print(error)
                 }
-//
-//                // Reading it back from the file
-//                var inString = ""
-//                do {
-//                    inString = try String(contentsOf: fileURL)
-//                } catch {
-//                    assertionFailure("Failed reading from URL: \(fileURL), Error: " + error.localizedDescription)
-//                }
-//                print("Read from the file: \(inString)")
 
                 DispatchQueue.main.sync { [self] in
                     let tempInt = String(Int(forecastResponse.current.temp_c)) + "°"
                     cell.setup(countryNames: "\(countryNames[indexPath.item])", temperaturesCountry: tempInt)
-                    }
-                } catch {
+                }
+                }
+            catch {
                     debugPrint(error)
                 }
             }.resume()
+        
+        
+        
+           
+//        let filesName = try? FileManager.default.contentsOfDirectory(atPath: jsonFolderURL.path)
+//
+//        for jsonFile in filesName! {
+//            let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
+//            urlsToJSON.append(fileURL)
+//        }
+//
+//        let data = try? Data(contentsOf: urlsToJSON[indexPath.item])
+//        let json = try? JSONSerialization.jsonObject(with: data!)
+//
+//        let forecastResponse = try? JSONDecoder().decode(ForecastsResponse.self, from: data!)
+//        let tempInt = String(Int(forecastResponse!.current.temp_c)) + "°"
+//
+//        cell.setup(countryNames: "\(countryNames[indexPath.item])", temperaturesCountry: tempInt)
+        
+        
+        
+            
         
         cell.layer.cornerRadius = 10
         return cell
@@ -234,6 +279,8 @@ extension ViewController: UISearchBarDelegate {
         
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         countryNames.append(filterData[indexPath.row])
+        
+        UserDefaults.standard.set([], forKey: "key")
         UserDefaults.standard.set(countryNames, forKey: "key")
         
         searchBar.text = nil
@@ -250,14 +297,15 @@ extension ViewController: CLLocationManagerDelegate {
         self.coordinates = locations.last?.coordinate
         locations.last?.fetchCityAndCountry(completion: { ( city, country, error) in
             
-            self.countryNames.insert(city!, at: 0)
+            self.countryNames.append(city!)
+            // self.countryNames.insert(city!, at: 0)
             UserDefaults.standard.set(self.countryNames, forKey: "key")
             
-            self.temperaturesCountry.insert(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(city!)&days=7")!, at: 0)
+            self.temperaturesCountry.append(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(city!)&days=7")!)
+            //         self.temperaturesCountry.insert(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(city!)&days=7")!, at: 0)
 
             self.locationManager.delegate = nil
             self.setupCollectionView()
-            
         })
     }
     
