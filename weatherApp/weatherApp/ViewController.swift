@@ -38,9 +38,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-       
-       
-        
         if FileManager.default.fileExists(atPath: jsonFolderURL.path) == false {
             try? FileManager.default.createDirectory(at: jsonFolderURL, withIntermediateDirectories: false)
         }
@@ -50,9 +47,7 @@ class ViewController: UIViewController {
         checkConnection()
         deleteSpacing()
         tableViewSettings()
-        
         loadListFiles()
-       
     }
     
     private func openJSONfromFile() {
@@ -100,12 +95,13 @@ class ViewController: UIViewController {
         }
         else {
             isConnection = false
-            searchBar.isHidden = true
+            
             
             let alert = UIAlertController(title: "Internet Connection is not Available!", message: "Do you want to load last data?", preferredStyle: UIAlertController.Style.alert)
                 
             alert.addAction(UIAlertAction(title: "Add", style: .cancel, handler: { [] (action) in
                 self.setupCollectionView()
+                self.searchBar.isHidden = true
             }))
                 
             self.present(alert, animated: true, completion: nil)
@@ -319,11 +315,9 @@ extension ViewController: CLLocationManagerDelegate {
         locations.last?.fetchCityAndCountry(completion: { ( city, country, error) in
             
             self.countryNames.append(city!)
-            // self.countryNames.insert(city!, at: 0)
             UserDefaults.standard.set(self.countryNames, forKey: "key")
             
             self.temperaturesCountry.append(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(city!)&days=7")!)
-            //         self.temperaturesCountry.insert(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(city!)&days=7")!, at: 0)
 
             self.locationManager.delegate = nil
             self.setupCollectionView()

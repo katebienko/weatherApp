@@ -7,8 +7,6 @@ class DebugViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
     }
     
     @IBAction func loadFromJSON(_ sender: Any) {
