@@ -33,7 +33,10 @@ class ForecastViewController: UIViewController {
         checkConnection()
         cityForecast()
         tableViewSettings()
-        
+        buttonSettings()
+    }
+    
+    private func buttonSettings() {
         backButton.setImage(UIImage(named: "arrow.svg"), for: .normal)
     }
     
@@ -124,19 +127,19 @@ class ForecastViewController: UIViewController {
                                 
                     switch forecastResponse.current.condition.text {
                     case "Sunny", "Clear":
-                        imageWeather.image = UIImage(named: "sunny.png")
+                            imageWeather.image = UIImage(named: "sunny.png")
                     case "Moderate or heavy rain with thunder":
-                        imageWeather.image = UIImage(named: "thunderRain.png")
+                            imageWeather.image = UIImage(named: "thunderRain.png")
                     case "Partly cloudy":
-                        imageWeather.image = UIImage(named: "partlyCloudy.png")
+                            imageWeather.image = UIImage(named: "partlyCloudy.png")
                     case "Light rain shower", "Moderate rain", "Patchy rain possible", "Light rain":
-                        imageWeather.image = UIImage(named: "lightRainShower.png")
+                            imageWeather.image = UIImage(named: "lightRainShower.png")
                     case "Patchy light rain with thunder":
-                        imageWeather.image = UIImage(named: "patchyRainPossible.png")
+                            imageWeather.image = UIImage(named: "patchyRainPossible.png")
                     case "Overcast":
-                        imageWeather.image = UIImage(named: "overcast.png")
+                            imageWeather.image = UIImage(named: "overcast.png")
                     default:
-                        imageWeather.image = UIImage(named: "sunny.png")
+                            imageWeather.image = UIImage(named: "sunny.png")
                     }
                                 
                     let todayDay = getDayOfWeek(forecastResponse.forecast.forecastday[0].date, format:"yyyy-MM-dd")

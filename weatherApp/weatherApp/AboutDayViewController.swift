@@ -2,8 +2,8 @@ import UIKit
 
 class AboutDayViewController: UIViewController {
     
-    var myUrl = URL(string: "")
     var indexPath: Int = 0
+    var myUrl = URL(string: "")
     var isConnection: Bool = UserDefaults.standard.object(forKey: "isConnection") as? Bool ?? true
     
     @IBOutlet private weak var daysName: UILabel!
@@ -18,10 +18,12 @@ class AboutDayViewController: UIViewController {
         super.viewDidLoad()
 
         cityForecast()
-
-        getBackButton.setImage(UIImage(named: "arrow.svg"), for: .normal)        
-
-            switch UserDefaults.standard.value(forKey: "bg") as! Bool {
+        buttonSettings()
+        chooseBgGradient()
+    }
+    
+    private func chooseBgGradient() {
+        switch UserDefaults.standard.value(forKey: "bg") as! Bool {
             case true:
                 let gradientLayer = CAGradientLayer()
                 gradientLayer.colors = [UIColor(red: 255.0/255.0, green: 198.0/255.0, blue: 0/255.0, alpha: 1.0).cgColor, UIColor(red: 235.0/255.0, green: 115.0/255.0, blue: 32.0/255.0, alpha: 1.0).cgColor]
@@ -40,38 +42,36 @@ class AboutDayViewController: UIViewController {
         }
     }
     
+    private func buttonSettings() {
+        getBackButton.setImage(UIImage(named: "arrow.svg"), for: .normal)
+    }
+    
     private func cityForecast() {
         let session = URLSession(configuration: .default)
             session.dataTask(with: myUrl!) { (data, response, error) in
-                    if let error = error {
-                        print(error.localizedDescription)
-                        return
-                    }
+                
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
         
-                    guard let data = data else {
-                        return
-                    }
-        
-                    do {
-                        let forecastResponse = try JSONDecoder().decode(ForecastsResponse.self, from: data)
+                guard let data = data else { return }
+                
+                do {
+                    let forecastResponse = try JSONDecoder().decode(ForecastsResponse.self, from: data)
                         
-                        DispatchQueue.main.async { [self] in
-                            daysName.text = getDayOfWeek(forecastResponse.forecast.forecastday[indexPath].date, format: "yyyy-MM-dd")
-                            
-                            maxTemperatureLabel.text = "\(forecastResponse.forecast.forecastday[indexPath].day.maxtemp_c)°"
-                            
-                            minTemperatureLabel.text = "\(forecastResponse.forecast.forecastday[indexPath].day.mintemp_c)°"
-                            
-                            avgTemperatureLabel.text = "\(forecastResponse.forecast.forecastday[indexPath].day.avgtemp_c)°"
-                            
-                            windSpeedLabel.text = "\(forecastResponse.forecast.forecastday[indexPath].day.maxwind_kph)"
-                            
-                            totalPrecipLabel.text = "\(forecastResponse.forecast.forecastday[indexPath].day.totalprecip_mm)"
-                        }
-                    } catch {
-                        debugPrint(error.localizedDescription)
+                    DispatchQueue.main.async { [self] in
+                        daysName.text = getDayOfWeek(forecastResponse.forecast.forecastday[indexPath].date, format: "yyyy-MM-dd")
+                        maxTemperatureLabel.text = "\(forecastResponse.forecast.forecastday[indexPath].day.maxtemp_c)°"
+                        minTemperatureLabel.text = "\(forecastResponse.forecast.forecastday[indexPath].day.mintemp_c)°"
+                        avgTemperatureLabel.text = "\(forecastResponse.forecast.forecastday[indexPath].day.avgtemp_c)°"
+                        windSpeedLabel.text = "\(forecastResponse.forecast.forecastday[indexPath].day.maxwind_kph)"
+                        totalPrecipLabel.text = "\(forecastResponse.forecast.forecastday[indexPath].day.totalprecip_mm)"
                     }
-                }.resume()
+                } catch {
+                    debugPrint(error.localizedDescription)
+                }
+            }.resume()
     }
     
     @IBAction func getBackAction(_ sender: Any) {

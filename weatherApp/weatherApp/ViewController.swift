@@ -96,10 +96,12 @@ class ViewController: UIViewController {
         else {
             isConnection = false
             
-            
             let alert = UIAlertController(title: "Internet Connection is not Available!", message: "Do you want to load last data?", preferredStyle: UIAlertController.Style.alert)
                 
-            alert.addAction(UIAlertAction(title: "Add", style: .cancel, handler: { [] (action) in
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { [] (action) in
+            }))
+            
+            alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [] (action) in
                 self.setupCollectionView()
                 self.searchBar.isHidden = true
             }))
