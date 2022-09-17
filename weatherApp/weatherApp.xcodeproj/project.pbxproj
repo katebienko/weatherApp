@@ -19,6 +19,7 @@
 		4A86FCF0286443B900DF09FA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A86FCEE286443B900DF09FA /* Main.storyboard */; };
 		4A86FCF2286443BB00DF09FA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A86FCF1286443BB00DF09FA /* Assets.xcassets */; };
 		4A86FCF5286443BB00DF09FA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A86FCF3286443BB00DF09FA /* LaunchScreen.storyboard */; };
+		4A8D85EE28D640E300F30754 /* DebugViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A8D85ED28D640E300F30754 /* DebugViewController.swift */; };
 		4AB4B4C828D3501600F0C51E /* AboutDayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB4B4C728D3501600F0C51E /* AboutDayViewController.swift */; };
 		4AC1E5DB286A397300B165B1 /* CitiesCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC1E5D9286A397300B165B1 /* CitiesCollectionViewCell.swift */; };
 		4AC1E5DC286A397300B165B1 /* CitiesCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4AC1E5DA286A397300B165B1 /* CitiesCollectionViewCell.xib */; };
@@ -41,6 +42,7 @@
 		4A86FCF1286443BB00DF09FA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4A86FCF4286443BB00DF09FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4A86FCF6286443BB00DF09FA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4A8D85ED28D640E300F30754 /* DebugViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugViewController.swift; sourceTree = "<group>"; };
 		4AB4B4C728D3501600F0C51E /* AboutDayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutDayViewController.swift; sourceTree = "<group>"; };
 		4AC1E5D9286A397300B165B1 /* CitiesCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitiesCollectionViewCell.swift; sourceTree = "<group>"; };
 		4AC1E5DA286A397300B165B1 /* CitiesCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CitiesCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				4A4B93F128D36A5800FC4C77 /* model */,
 				4A86FCE8286443B900DF09FA /* AppDelegate.swift */,
 				4A86FCEC286443B900DF09FA /* ViewController.swift */,
+				4A8D85ED28D640E300F30754 /* DebugViewController.swift */,
 				4A5D0BD62864AC9D00977A9E /* ForecastViewController.swift */,
 				4AB4B4C728D3501600F0C51E /* AboutDayViewController.swift */,
 				4AEFC82B28D39D4700466BBD /* Reachability.swift */,
@@ -254,6 +257,7 @@
 			files = (
 				4A5D655A286B22DB00A31ECA /* UICollectionViewCell+ReuseIdentifier.swift in Sources */,
 				4A86FCED286443B900DF09FA /* ViewController.swift in Sources */,
+				4A8D85EE28D640E300F30754 /* DebugViewController.swift in Sources */,
 				4AB4B4C828D3501600F0C51E /* AboutDayViewController.swift in Sources */,
 				4A86FCE9286443B900DF09FA /* AppDelegate.swift in Sources */,
 				4A5D0BD72864AC9D00977A9E /* ForecastViewController.swift in Sources */,

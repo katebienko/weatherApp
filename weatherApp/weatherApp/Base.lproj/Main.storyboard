@@ -311,6 +311,7 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="edt-ko-gaE"/>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="iPj-W8-cgL" firstAttribute="top" secondItem="LpU-JV-K5e" secondAttribute="bottom" constant="5" id="1WI-0t-amU"/>
                             <constraint firstItem="JfN-c0-shp" firstAttribute="leading" secondItem="iPj-W8-cgL" secondAttribute="trailing" constant="20" id="3b1-OC-d1G"/>
@@ -359,12 +360,16 @@
                             <constraint firstItem="nbU-tJ-tMS" firstAttribute="leading" secondItem="JfN-c0-shp" secondAttribute="trailing" constant="5" id="ydy-Ob-T9S"/>
                             <constraint firstItem="Wnw-8y-SzW" firstAttribute="leading" secondItem="DLA-th-QxZ" secondAttribute="leading" id="zUX-RX-XDP"/>
                         </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="RPe-jH-oDf" appends="YES" id="qdm-UA-pRN"/>
+                        </connections>
                     </view>
                     <connections>
                         <outlet property="backButton" destination="Lgu-55-zBs" id="xFw-JG-SHF"/>
                         <outlet property="bgView" destination="DLA-th-QxZ" id="U1m-5H-MRu"/>
                         <outlet property="cityNameLabel" destination="eGb-nf-q8t" id="VpV-aa-ueY"/>
                         <outlet property="daysOfWeekTable" destination="rbS-90-YM4" id="lqv-rh-EFP"/>
+                        <outlet property="debugLabel" destination="aof-de-Olj" id="rSP-Xe-xwi"/>
                         <outlet property="degreesLabel" destination="LpU-JV-K5e" id="xnG-sZ-hh9"/>
                         <outlet property="highterTemperatureLabel" destination="iPj-W8-cgL" id="ql6-cN-8pu"/>
                         <outlet property="humidityImage" destination="B9V-EC-9mU" id="3EU-K9-RmA"/>
@@ -381,6 +386,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EoN-xO-ahY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="RPe-jH-oDf"/>
             </objects>
             <point key="canvasLocation" x="936.79999999999995" y="62.807881773399018"/>
         </scene>
@@ -536,6 +542,43 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Zba-jD-gEB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1785" y="63"/>
+        </scene>
+        <!--Debug View Controller-->
+        <scene sceneID="eDE-bZ-HGn">
+            <objects>
+                <viewController storyboardIdentifier="DebugViewController" id="pjz-OO-peZ" customClass="DebugViewController" customModule="weatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="lrI-Fh-KSa">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CVB-N7-W5V">
+                                <rect key="frame" x="136" y="177" width="113" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Load from JSON"/>
+                                <connections>
+                                    <action selector="loadFromJSON:" destination="pjz-OO-peZ" eventType="touchUpInside" id="2Nm-zB-u4M"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hxO-YU-zwd">
+                                <rect key="frame" x="144" y="230" width="97" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Load from API"/>
+                                <connections>
+                                    <action selector="loadFromAPI:" destination="pjz-OO-peZ" eventType="touchUpInside" id="crk-NK-Egf"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="PJj-Ic-Rqq"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <connections>
+                        <outlet property="loadFromAPIButton" destination="hxO-YU-zwd" id="Fqc-Ga-CPS"/>
+                        <outlet property="loadFromJSONButton" destination="CVB-N7-W5V" id="pTJ-aU-t8X"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QtZ-Vl-0Nr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2645" y="42"/>
         </scene>
     </scenes>
     <resources>

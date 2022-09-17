@@ -10,7 +10,7 @@ class ViewController: UIViewController {
     let decoder = JSONDecoder() // превращает данные в объект
     let encoder = JSONEncoder() // превращает объект в данные
     
-    var isConnection: Bool = true
+    var isConnection: Bool = UserDefaults.standard.object(forKey: "isConnection") as? Bool ?? true
 
     let documentFolderURL: URL = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
     lazy var jsonFolderURL: URL = documentFolderURL.appendingPathComponent("jsons")
@@ -27,8 +27,19 @@ class ViewController: UIViewController {
     @IBOutlet private weak var searchBar: UISearchBar!
     @IBOutlet private weak var tableView: UITableView!
     
+    override func viewWillAppear(_ animated: Bool) {
+        if UserDefaults.standard.object(forKey: "isConnection") as? Bool == false {
+            searchBar.isHidden = true
+        } else {
+            searchBar.isHidden = false
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+       
+       
         
         if FileManager.default.fileExists(atPath: jsonFolderURL.path) == false {
             try? FileManager.default.createDirectory(at: jsonFolderURL, withIntermediateDirectories: false)
@@ -79,6 +90,7 @@ class ViewController: UIViewController {
     private func checkConnection() {
         if Reachability.isConnectedToNetwork(){
             isConnection = true
+            searchBar.isHidden = false
             
             setupCollectionView()
 
@@ -88,6 +100,8 @@ class ViewController: UIViewController {
         }
         else {
             isConnection = false
+            searchBar.isHidden = true
+            
             let alert = UIAlertController(title: "Internet Connection is not Available!", message: "Do you want to load last data?", preferredStyle: UIAlertController.Style.alert)
                 
             alert.addAction(UIAlertAction(title: "Add", style: .cancel, handler: { [] (action) in
@@ -137,7 +151,6 @@ class ViewController: UIViewController {
                 let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
                 urlsToJSON.append(fileURL)
             }
-
         }
     }
     
@@ -168,10 +181,6 @@ class ViewController: UIViewController {
     private func addLinkCityToArray(name: String) {
         let newString = name.replacingOccurrences(of: " ", with: "%20")
         temperaturesCountry.append(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(newString)&days=7")!)
-    }
-    
-    private func infoNoIndernet() {
-        
     }
 }
 
@@ -222,12 +231,12 @@ extension ViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
-        if let forecastViewController = storyboard.instantiateViewController(identifier: "ForecastViewController") as? ForecastViewController {
-                forecastViewController.modalPresentationStyle = .fullScreen
-            
-            if isConnection == true {
-                forecastViewController.myUrl = temperaturesCountry[indexPath.item]
+                
+                if let forecastViewController = storyboard.instantiateViewController(identifier: "ForecastViewController") as? ForecastViewController {
+                        forecastViewController.modalPresentationStyle = .fullScreen
+                    
+                    if isConnection == true {
+                        forecastViewController.myUrl = temperaturesCountry[indexPath.item]
             } else {
                 forecastViewController.myUrl = urlsToJSON[indexPath.item]
             }

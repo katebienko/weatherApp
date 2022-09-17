@@ -7,7 +7,9 @@ class ForecastViewController: UIViewController {
     var daysOfWeek: [String] = []
     var maxTemp: [String] = []
     var minTemp: [String] = []
+    var count = 0
     
+    @IBOutlet weak var debugLabel: UILabel!
     @IBOutlet private var bgView: UIView!
     @IBOutlet private weak var cityNameLabel: UILabel!
     @IBOutlet private weak var degreesLabel: UILabel!
@@ -29,11 +31,30 @@ class ForecastViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapFunction))
+        
+        debugLabel.isUserInteractionEnabled = true
+        debugLabel.addGestureRecognizer(tap)
+        
         checkConnection()
         cityForecast()
         tableViewSettings()
         
         backButton.setImage(UIImage(named: "arrow.svg"), for: .normal)
+    }
+    
+    @objc
+    func tapFunction(sender: UITapGestureRecognizer) {
+        count += 1
+        
+        if count == 5 {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    
+            if let debugViewController = storyboard.instantiateViewController(identifier: "DebugViewController") as? DebugViewController {
+                    debugViewController.modalPresentationStyle = .fullScreen
+                    navigationController?.pushViewController(debugViewController, animated: true)
+            }
+        }
     }
     
     private func checkConnection() {
