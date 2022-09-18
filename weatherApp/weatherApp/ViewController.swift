@@ -16,9 +16,9 @@ class ViewController: UIViewController {
     lazy var jsonFolderURL: URL = documentFolderURL.appendingPathComponent("jsons")
     
     var countryNames: [String] = UserDefaults.standard.stringArray(forKey: "key") ?? []
-    var urlsToJSON: [URL] = []
+    var pathsCitiesJSON: [URL] = []
     
-    var temperaturesCountry: [URL] = [].compactMap { URL(string: $0) }
+    var urlsCities: [URL] = [].compactMap { URL(string: $0) }
     var allCities: [String] = []
     var filterData: [String]!
     
@@ -56,7 +56,7 @@ class ViewController: UIViewController {
 
             for jsonFile in filesName {
                 let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
-                urlsToJSON.append(fileURL)
+                pathsCitiesJSON.append(fileURL)
             }
         } catch {
             print(error.localizedDescription)
@@ -147,7 +147,7 @@ class ViewController: UIViewController {
 
             for jsonFile in filesName! {
                 let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
-                urlsToJSON.append(fileURL)
+                pathsCitiesJSON.append(fileURL)
             }
         }
     }
@@ -157,11 +157,10 @@ class ViewController: UIViewController {
         let forecastResponse = try? JSONDecoder().decode(ForecastsResponse.self, from: data)
         
         do {
-            let fileURL = self.jsonFolderURL.appendingPathComponent("savedCities\(String(describing: forecastResponse?.location.name)).json")
+            let fileURL = jsonFolderURL.appendingPathComponent("savedCities\(String(describing: forecastResponse?.location.name)).json")
               //  print(fileURL.path)
 
             try JSONSerialization.data(withJSONObject: json!, options: .prettyPrinted).write(to: fileURL)
-            
         } catch {
             print(error)
         }
@@ -178,7 +177,7 @@ class ViewController: UIViewController {
     
     private func addLinkCityToArray(name: String) {
         let newString = name.replacingOccurrences(of: " ", with: "%20")
-        temperaturesCountry.append(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(newString)&days=7")!)
+        urlsCities.append(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(newString)&days=7")!)
     }
 }
 
@@ -192,36 +191,35 @@ extension ViewController: UICollectionViewDataSource {
             fatalError()
         }
         
+        var url: URL
         if isConnection == true {
-            let url = temperaturesCountry[indexPath.item]
-            let session = URLSession(configuration: .default)
-            session.dataTask(with: url) { (data, response, error) in
-
-                guard let data = data else { return }
-                self.saveCityJSON(data: data)
-                
-                do {
-                    let forecastResponse = try JSONDecoder().decode(ForecastsResponse.self, from: data)
-                    
-                    DispatchQueue.main.sync { [self] in
-                        let tempInt = String(Int(forecastResponse.current.temp_c)) + "°"
-                        cell.setup(countryNames: "\(countryNames[indexPath.item])", temperaturesCountry: tempInt)
-                    }
-                }
-                catch {
-                        debugPrint(error)
-                    }
-                }.resume()
-            
+            url = urlsCities[indexPath.item]
         } else {
-            
-            let data = try! Data(contentsOf: urlsToJSON[indexPath.item])
-            let forecastResponse = try? JSONDecoder().decode(ForecastsResponse.self, from: data)
-            
-            let tempInt = String(Int(forecastResponse!.current.temp_c)) + "°"
-            cell.setup(countryNames: "\(forecastResponse!.location.name)", temperaturesCountry: tempInt)
+            url = pathsCitiesJSON[indexPath.item]
         }
         
+        let session = URLSession(configuration: .default)
+        session.dataTask(with: url) { (data, response, error) in
+            
+            guard let data = data else { return }
+            
+            if self.isConnection {
+                self.saveCityJSON(data: data)
+            }
+            
+            do {
+                let forecastResponse = try JSONDecoder().decode(ForecastsResponse.self, from: data)
+                
+                DispatchQueue.main.sync { [] in
+                    cell.setup(
+                        countryNames: "\(forecastResponse.location.name)",
+                        temperaturesCountry: String(Int(forecastResponse.current.temp_c)) + "°"
+                    )
+                }
+            }
+            catch { debugPrint(error) }
+        }.resume()
+
         cell.layer.cornerRadius = 10
         return cell
     }
@@ -234,9 +232,9 @@ extension ViewController: UICollectionViewDataSource {
             forecastViewController.modalPresentationStyle = .fullScreen
             
             if isConnection == true {
-                forecastViewController.myUrl = temperaturesCountry[indexPath.item]
+                forecastViewController.myUrl = urlsCities[indexPath.item]
             } else {
-                forecastViewController.myUrl = urlsToJSON[indexPath.item]
+                forecastViewController.myUrl = pathsCitiesJSON[indexPath.item]
             }
             
             navigationController?.pushViewController(forecastViewController, animated: true)
@@ -320,8 +318,8 @@ extension ViewController: CLLocationManagerDelegate {
             self.countryNames.removeDuplicates()
             UserDefaults.standard.set(self.countryNames, forKey: "key")
             
-            self.temperaturesCountry.append(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(city!)&days=7")!)
-            self.temperaturesCountry.removeDuplicates()
+            self.urlsCities.append(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(city!)&days=7")!)
+            self.urlsCities.removeDuplicates()
 
             self.locationManager.delegate = nil
             self.setupCollectionView()
