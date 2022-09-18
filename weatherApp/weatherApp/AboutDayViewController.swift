@@ -13,6 +13,7 @@ class AboutDayViewController: UIViewController {
     @IBOutlet private weak var avgTemperatureLabel: UILabel!
     @IBOutlet private weak var windSpeedLabel: UILabel!
     @IBOutlet private weak var totalPrecipLabel: UILabel!
+    @IBOutlet private weak var feelsLikeLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,6 +68,7 @@ class AboutDayViewController: UIViewController {
                         avgTemperatureLabel.text = "\(forecastResponse.forecast.forecastday[indexPath].day.avgtemp_c)°"
                         windSpeedLabel.text = "\(forecastResponse.forecast.forecastday[indexPath].day.maxwind_kph)"
                         totalPrecipLabel.text = "\(forecastResponse.forecast.forecastday[indexPath].day.totalprecip_mm)"
+                        feelsLikeLabel.text = "\(forecastResponse.forecast.forecastday[indexPath].day.daily_chance_of_rain)"
                     }
                 } catch {
                     debugPrint(error.localizedDescription)

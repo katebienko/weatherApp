@@ -454,6 +454,12 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Daily Chance Of Rain:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="26a-Kr-cEa">
+                                <rect key="frame" x="29.999999999999986" y="429" width="201.66666666666663" height="24"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Temp. (max):" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JVx-hC-g9f">
                                 <rect key="frame" x="30.000000000000007" y="159" width="123.66666666666669" height="24"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
@@ -490,6 +496,12 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R0f-HY-HnO">
+                                <rect key="frame" x="329" y="426" width="16" height="30"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="TuV-X6-EEO"/>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -498,7 +510,10 @@
                             <constraint firstItem="ncr-m0-m8P" firstAttribute="centerY" secondItem="eDA-LQ-WvE" secondAttribute="centerY" id="1zo-zC-LIW"/>
                             <constraint firstItem="Dsw-bP-UqY" firstAttribute="centerY" secondItem="A4V-3F-2Cd" secondAttribute="centerY" id="21K-SL-QiX"/>
                             <constraint firstItem="i7Q-Za-I0c" firstAttribute="centerY" secondItem="eDA-LQ-WvE" secondAttribute="centerY" id="3jG-SX-okP"/>
+                            <constraint firstItem="26a-Kr-cEa" firstAttribute="top" secondItem="MTb-qY-3f3" secondAttribute="bottom" constant="30" id="42U-Db-ZyQ"/>
+                            <constraint firstItem="26a-Kr-cEa" firstAttribute="leading" secondItem="TuV-X6-EEO" secondAttribute="leading" constant="30" id="5Uq-Y3-x55"/>
                             <constraint firstItem="KOu-fc-q27" firstAttribute="top" secondItem="A4V-3F-2Cd" secondAttribute="bottom" constant="30" id="64d-mw-OLa"/>
+                            <constraint firstItem="R0f-HY-HnO" firstAttribute="leading" secondItem="OZF-uu-ybD" secondAttribute="leading" id="AFc-bh-fjg"/>
                             <constraint firstItem="eDA-LQ-WvE" firstAttribute="top" secondItem="TuV-X6-EEO" secondAttribute="top" constant="20" id="CZg-48-U18"/>
                             <constraint firstItem="H8S-u4-hgA" firstAttribute="centerY" secondItem="KOu-fc-q27" secondAttribute="centerY" id="CoL-xm-DOo"/>
                             <constraint firstItem="OZF-uu-ybD" firstAttribute="centerY" secondItem="JVx-hC-g9f" secondAttribute="centerY" id="F3d-EN-JMq"/>
@@ -517,6 +532,7 @@
                             <constraint firstItem="A4V-3F-2Cd" firstAttribute="leading" secondItem="TuV-X6-EEO" secondAttribute="leading" constant="30" id="c7v-4G-bf6"/>
                             <constraint firstItem="JVx-hC-g9f" firstAttribute="leading" secondItem="TuV-X6-EEO" secondAttribute="leading" constant="30" id="eTb-MG-4EX"/>
                             <constraint firstItem="TuV-X6-EEO" firstAttribute="trailing" secondItem="H8S-u4-hgA" secondAttribute="trailing" constant="30" id="in7-Wt-xa0"/>
+                            <constraint firstItem="R0f-HY-HnO" firstAttribute="centerY" secondItem="26a-Kr-cEa" secondAttribute="centerY" id="k5Y-C5-eqB"/>
                             <constraint firstItem="TuV-X6-EEO" firstAttribute="trailing" secondItem="ncr-m0-m8P" secondAttribute="trailing" constant="30" id="kkf-Mw-Mk1"/>
                             <constraint firstAttribute="trailing" secondItem="0v6-h3-FfS" secondAttribute="trailing" id="ppi-dI-v2d"/>
                             <constraint firstItem="JVx-hC-g9f" firstAttribute="top" secondItem="0v6-h3-FfS" secondAttribute="bottom" constant="50" id="pvP-GN-JYU"/>
@@ -530,6 +546,7 @@
                     <connections>
                         <outlet property="avgTemperatureLabel" destination="H8S-u4-hgA" id="JY0-zl-Ffo"/>
                         <outlet property="daysName" destination="eDA-LQ-WvE" id="dlk-8Z-DVy"/>
+                        <outlet property="feelsLikeLabel" destination="R0f-HY-HnO" id="phT-uR-Yai"/>
                         <outlet property="getBackButton" destination="i7Q-Za-I0c" id="fUl-Ud-sQK"/>
                         <outlet property="maxTemperatureLabel" destination="OZF-uu-ybD" id="Gkr-q9-1gn"/>
                         <outlet property="minTemperatureLabel" destination="Dsw-bP-UqY" id="U4s-1K-YuY"/>

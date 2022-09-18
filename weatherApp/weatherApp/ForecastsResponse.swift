@@ -37,4 +37,5 @@ struct Day: Codable {
     let avgtemp_c: Double
     let maxwind_kph: Double
     let totalprecip_mm: Double
+    let daily_chance_of_rain: Double
 }
