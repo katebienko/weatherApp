@@ -549,18 +549,22 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CVB-N7-W5V">
-                                <rect key="frame" x="136" y="177" width="113" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Load from JSON"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CVB-N7-W5V">
+                                <rect key="frame" x="40" y="344" width="295" height="36"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <state key="normal" title="Load from JSON">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
                                 <connections>
                                     <action selector="loadFromJSON:" destination="pjz-OO-peZ" eventType="touchUpInside" id="2Nm-zB-u4M"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hxO-YU-zwd">
-                                <rect key="frame" x="144" y="230" width="97" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Load from API"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hxO-YU-zwd">
+                                <rect key="frame" x="40" y="410" width="295" height="36"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <state key="normal" title="Load from API">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
                                 <connections>
                                     <action selector="loadFromAPI:" destination="pjz-OO-peZ" eventType="touchUpInside" id="crk-NK-Egf"/>
                                 </connections>
@@ -568,6 +572,14 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="PJj-Ic-Rqq"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="hxO-YU-zwd" firstAttribute="top" secondItem="CVB-N7-W5V" secondAttribute="bottom" constant="30" id="41h-63-505"/>
+                            <constraint firstItem="CVB-N7-W5V" firstAttribute="top" secondItem="PJj-Ic-Rqq" secondAttribute="top" constant="300" id="8EB-2Z-9uB"/>
+                            <constraint firstItem="hxO-YU-zwd" firstAttribute="leading" secondItem="PJj-Ic-Rqq" secondAttribute="leading" constant="40" id="BMB-RJ-wNu"/>
+                            <constraint firstItem="PJj-Ic-Rqq" firstAttribute="trailing" secondItem="CVB-N7-W5V" secondAttribute="trailing" constant="40" id="CrV-sh-Mpl"/>
+                            <constraint firstItem="CVB-N7-W5V" firstAttribute="leading" secondItem="PJj-Ic-Rqq" secondAttribute="leading" constant="40" id="Iht-rd-b27"/>
+                            <constraint firstItem="PJj-Ic-Rqq" firstAttribute="trailing" secondItem="hxO-YU-zwd" secondAttribute="trailing" constant="40" id="fAg-aO-CfI"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="loadFromAPIButton" destination="hxO-YU-zwd" id="Fqc-Ga-CPS"/>

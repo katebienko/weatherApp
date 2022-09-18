@@ -98,13 +98,6 @@
 			path = cells;
 			sourceTree = "<group>";
 		};
-		4A4B93F128D36A5800FC4C77 /* model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = model;
-			sourceTree = "<group>";
-		};
 		4A86FCDC286443B900DF09FA = {
 			isa = PBXGroup;
 			children = (
@@ -129,7 +122,6 @@
 				4A0AD1AD28D2434E00A89032 /* json */,
 				4A0AD1B428D243C400A89032 /* xib */,
 				4A4B93EE28D36A1500FC4C77 /* cells */,
-				4A4B93F128D36A5800FC4C77 /* model */,
 				4A86FCE8286443B900DF09FA /* AppDelegate.swift */,
 				4A86FCEC286443B900DF09FA /* ViewController.swift */,
 				4A8D85ED28D640E300F30754 /* DebugViewController.swift */,

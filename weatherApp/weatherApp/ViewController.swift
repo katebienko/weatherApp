@@ -216,7 +216,6 @@ extension ViewController: UICollectionViewDataSource {
         } else {
             
             let data = try! Data(contentsOf: urlsToJSON[indexPath.item])
-
             let forecastResponse = try? JSONDecoder().decode(ForecastsResponse.self, from: data)
             
             let tempInt = String(Int(forecastResponse!.current.temp_c)) + "°"
@@ -229,12 +228,13 @@ extension ViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                
-                if let forecastViewController = storyboard.instantiateViewController(identifier: "ForecastViewController") as? ForecastViewController {
-                        forecastViewController.modalPresentationStyle = .fullScreen
-                    
-                    if isConnection == true {
-                        forecastViewController.myUrl = temperaturesCountry[indexPath.item]
+        
+        if let forecastViewController = storyboard.instantiateViewController(identifier: "ForecastViewController") as? ForecastViewController {
+            
+            forecastViewController.modalPresentationStyle = .fullScreen
+            
+            if isConnection == true {
+                forecastViewController.myUrl = temperaturesCountry[indexPath.item]
             } else {
                 forecastViewController.myUrl = urlsToJSON[indexPath.item]
             }
@@ -317,9 +317,11 @@ extension ViewController: CLLocationManagerDelegate {
         locations.last?.fetchCityAndCountry(completion: { ( city, country, error) in
             
             self.countryNames.append(city!)
+            self.countryNames.removeDuplicates()
             UserDefaults.standard.set(self.countryNames, forKey: "key")
             
             self.temperaturesCountry.append(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(city!)&days=7")!)
+            self.temperaturesCountry.removeDuplicates()
 
             self.locationManager.delegate = nil
             self.setupCollectionView()
@@ -336,5 +338,19 @@ extension ViewController: CLLocationManagerDelegate {
 extension CLLocation {
     func fetchCityAndCountry(completion: @escaping (_ city: String?, _ country:  String?, _ error: Error?) -> ()) {
         CLGeocoder().reverseGeocodeLocation(self) { completion($0?.first?.locality, $0?.first?.country, $1) }
+    }
+}
+
+extension Array where Element: Hashable {
+    func removingDuplicates() -> [Element] {
+        var addedDict = [Element: Bool]()
+
+        return filter {
+            addedDict.updateValue(true, forKey: $0) == nil
+        }
+    }
+
+    mutating func removeDuplicates() {
+        self = self.removingDuplicates()
     }
 }
