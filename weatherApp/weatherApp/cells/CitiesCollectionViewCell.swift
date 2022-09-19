@@ -9,8 +9,8 @@ class CitiesCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
     }
     
-    func setup(countryNames: String, temperaturesCountry: String) {
-        citieLabel.text = countryNames
-        temperatureLabel.text = "\(temperaturesCountry)"
+    func setup(cityNames: String, cityTemperatures: String) {
+        citieLabel.text = cityNames
+        temperatureLabel.text = "\(cityTemperatures)"
     }
 }

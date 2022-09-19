@@ -33,11 +33,17 @@ class ForecastViewController: UIViewController {
         checkConnection()
         cityForecast()
         tableViewSettings()
-        buttonSettings()
+        setAllImages()
     }
     
-    private func buttonSettings() {
+    private func setAllImages() {
         backButton.setImage(UIImage(named: "arrow.svg"), for: .normal)
+        
+        setImages(imgName: "windSpeed.png", image: windSpeedImage)
+        setImages(imgName: "humidity.png", image: humidityImage)
+        setImages(imgName: "visible.png", image: visibleImage)
+        setImages(imgName: "temperatureUp.png", image: temperatureUpImage)
+        setImages(imgName: "temperatureDown.png", image: temperatureDownImage)
     }
     
     @IBAction func openDebugController(_ sender: Any) {
@@ -56,8 +62,7 @@ class ForecastViewController: UIViewController {
     private func checkConnection() {
         if Reachability.isConnectedToNetwork(){
             isConnection = true
-        }
-        else {
+        } else {
             isConnection = false
         }
     }
@@ -93,16 +98,14 @@ class ForecastViewController: UIViewController {
             do {
                 let forecastResponse = try JSONDecoder().decode(ForecastsResponse.self, from: data)
                 DispatchQueue.main.async { [self] in
-                    setAllImages()
+                    
                                 
                     if forecastResponse.current.condition.text == "Sunny" && forecastResponse.current.temp_c >= 15 || forecastResponse.current.condition.text == "Clear" && forecastResponse.current.temp_c >= 15 {
                                     
                         sunnyOrRainyDayBg(colorTop: UIColor(red: 255.0/255.0, green: 198.0/255.0, blue: 0/255.0, alpha: 1.0).cgColor, colorBottom: UIColor(red: 235.0/255.0, green: 115.0/255.0, blue: 32.0/255.0, alpha: 1.0).cgColor)
                                     
                         UserDefaults.standard.set(true, forKey: "bg")
-                    }
-                    
-                    else {
+                    } else {
                         sunnyOrRainyDayBg(colorTop: UIColor(red: 87.0/255.0, green: 154.0/255.0, blue: 230.0/255.0, alpha: 1.0).cgColor, colorBottom: UIColor(red: 55.0/255.0, green: 70.0/255.0, blue: 131.0/255.0, alpha: 1.0).cgColor)
                                     
                         UserDefaults.standard.set(false, forKey: "bg")
@@ -115,15 +118,13 @@ class ForecastViewController: UIViewController {
                     highterTemperatureLabel.text = String("\(forecastResponse.forecast.forecastday[0].day.maxtemp_c)°")
                     lowerTemperatureLabel.text = String("\(forecastResponse.forecast.forecastday[0].day.mintemp_c)°")
                     visibleLabel.text = String("\(forecastResponse.current.vis_km) km")
-                                
-                    maxTemp.append("\(forecastResponse.forecast.forecastday[0].day.maxtemp_c)")
-                    maxTemp.append("\(forecastResponse.forecast.forecastday[1].day.maxtemp_c)")
-                    maxTemp.append("\(forecastResponse.forecast.forecastday[2].day.maxtemp_c)")
-                                
-                    minTemp.append("\(forecastResponse.forecast.forecastday[0].day.mintemp_c)")
-                    minTemp.append("\(forecastResponse.forecast.forecastday[1].day.mintemp_c)")
-                    minTemp.append("\(forecastResponse.forecast.forecastday[2].day.mintemp_c)")
-                                
+                           
+                    for day in 0 ... 2 {
+                        maxTemp.append("\(forecastResponse.forecast.forecastday[day].day.maxtemp_c)")
+                        minTemp.append("\(forecastResponse.forecast.forecastday[day].day.mintemp_c)")
+                        
+                    }
+
                     switch forecastResponse.current.condition.text {
                     case "Sunny", "Clear":
                             imageWeather.image = UIImage(named: "sunny.png")
@@ -157,7 +158,7 @@ class ForecastViewController: UIViewController {
         }.resume()
     }
     
-    private func getDayOfWeek(_ date:String, format: String) -> String? {
+    private func getDayOfWeek(_ date: String, format: String) -> String? {
         let weekDays = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ]
 
         let formatter  = DateFormatter()
@@ -170,22 +171,12 @@ class ForecastViewController: UIViewController {
         return weekDays[weekDay-1]
     }
     
-    private func setAllImages() {
-        let imageWindSpeed = UIImage(named: "windSpeed.png")
-        self.windSpeedImage.image = imageWindSpeed
-        
-        let humidityImage = UIImage(named: "humidity.png")
-        self.humidityImage.image = humidityImage
-        
-        let visibleImage = UIImage(named: "visible.png")
-        self.visibleImage.image = visibleImage
-        
-        let temperatureUpImage = UIImage(named: "temperatureUp.png")
-        self.temperatureUpImage.image = temperatureUpImage
-        
-        let temperatureDownImage = UIImage(named: "temperatureDown.png")
-        self.temperatureDownImage.image = temperatureDownImage
+    private func setImages(imgName: String, image: UIImageView) {
+        let newImage = UIImage(named: imgName)
+        image.image = newImage
     }
+    
+
     
     @IBAction func getBackAction(_ sender: Any) {
         navigationController?.popToRootViewController(animated: true)
