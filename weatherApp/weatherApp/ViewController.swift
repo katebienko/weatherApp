@@ -15,12 +15,12 @@ class ViewController: UIViewController {
     let documentFolderURL: URL = try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
     lazy var jsonFolderURL: URL = documentFolderURL.appendingPathComponent("jsons")
     
-    var countryNames: [String] = UserDefaults.standard.stringArray(forKey: "key") ?? []
+    var cityNames: [String] = UserDefaults.standard.stringArray(forKey: "cityNamesKey") ?? []
     var pathsCitiesJSON: [URL] = []
     
     var urlsCities: [URL] = [].compactMap { URL(string: $0) }
-    var allCities: [String] = []
-    var filterData: [String]!
+    var allCitiesInJSON: [String] = []
+    var filteredName: [String]!
     
     @IBOutlet private var bgView: UIView!
     @IBOutlet private weak var forecastCollectionView: UICollectionView!
@@ -76,7 +76,7 @@ class ViewController: UIViewController {
     }
     
     private func deleteSpacing() {
-        for name in countryNames {
+        for name in cityNames {
             let newString = name.replacingOccurrences(of: " ", with: "%20")
             addLinkCityToArray(name: newString)
         }
@@ -116,23 +116,24 @@ class ViewController: UIViewController {
         tableView.dataSource = self
         
         searchBar.delegate = self
-        filterData = allCities
+        filteredName = allCitiesInJSON
     }
     
     private func loadCitiesForSearchJSON() {
         if let path = Bundle.main.path(forResource: "json_file", ofType: nil) {
             let url = URL(fileURLWithPath: path)
+            
             do {
                 let data = try Data(contentsOf: url)
                 let json = try JSONSerialization.jsonObject(with: data)
                 
-                UserDefaults.standard.set(json, forKey: "json")
+               // UserDefaults.standard.set(json, forKey: "json")
                 
                 let arrayOfDicts = json as? [[String: Any]] ?? []
                
                 for dict in arrayOfDicts {
                     if let names = dict["name"] as? String {
-                        allCities.append(names)
+                        allCitiesInJSON.append(names)
                     }
                 }
             } catch {
@@ -158,7 +159,7 @@ class ViewController: UIViewController {
         
         do {
             let fileURL = jsonFolderURL.appendingPathComponent("savedCities\(String(describing: forecastResponse?.location.name)).json")
-              //  print(fileURL.path)
+            //print(fileURL.path)
 
             try JSONSerialization.data(withJSONObject: json!, options: .prettyPrinted).write(to: fileURL)
         } catch {
@@ -183,7 +184,7 @@ class ViewController: UIViewController {
 
 extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return countryNames.count
+        return cityNames.count
     }
         
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -262,12 +263,12 @@ extension UIViewController: UICollectionViewDelegateFlowLayout {
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        return filterData.count
+        return filteredName.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = filterData[indexPath.row]
+        cell.textLabel?.text = filteredName[indexPath.row]
         
         return cell
     }
@@ -275,18 +276,20 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension ViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filterData = []
+        filteredName = []
         
         if searchText.isEmpty {
-            filterData = allCities
+        //    filteredName = allCitiesInJSON
             tableView.isHidden = true
         } else {
             tableView.isHidden = false
         }
         
-        for word in allCities {
-            if word.uppercased().contains(searchText.uppercased()) {
-                filterData.append(word)
+        for city in allCitiesInJSON {
+            //check if texted letters there is at city from JSON
+            if city.uppercased().contains(searchText.uppercased()) {
+                //added cities witch contain letters to array
+                filteredName.append(city)
             }
         }
         
@@ -295,16 +298,14 @@ extension ViewController: UISearchBarDelegate {
     }
         
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        countryNames.append(filterData[indexPath.row])
-        
-        UserDefaults.standard.set([], forKey: "key")
-        UserDefaults.standard.set(countryNames, forKey: "key")
+        cityNames.append(filteredName[indexPath.row])
+        UserDefaults.standard.set(cityNames, forKey: "cityNamesKey")
         
         searchBar.text = nil
         searchBar.endEditing(true)
         tableView.isHidden = true
         
-        addLinkCityToArray(name: filterData[indexPath.row])
+        addLinkCityToArray(name: filteredName[indexPath.row])
         setupCollectionView()
     }
 }
@@ -314,14 +315,15 @@ extension ViewController: CLLocationManagerDelegate {
         self.coordinates = locations.last?.coordinate
         locations.last?.fetchCityAndCountry(completion: { ( city, country, error) in
             
-            self.countryNames.append(city!)
-            self.countryNames.removeDuplicates()
-            UserDefaults.standard.set(self.countryNames, forKey: "key")
+            self.cityNames.append(city!)
+            self.cityNames.removeDuplicates()
+            
+            UserDefaults.standard.set(self.cityNames, forKey: "cityNamesKey")
             
             self.urlsCities.append(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(city!)&days=7")!)
             self.urlsCities.removeDuplicates()
 
-            self.locationManager.delegate = nil
+          //  self.locationManager.delegate = nil
             self.setupCollectionView()
         })
     }

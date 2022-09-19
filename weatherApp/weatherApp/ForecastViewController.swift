@@ -79,7 +79,6 @@ class ForecastViewController: UIViewController {
     }
     
     private func cityForecast() {
-        
         let session = URLSession(configuration: .default)
         session.dataTask(with: myUrl!) { (data, response, error) in
                         
