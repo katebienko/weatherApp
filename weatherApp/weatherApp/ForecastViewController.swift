@@ -97,9 +97,9 @@ class ForecastViewController: UIViewController {
             
             do {
                 let forecastResponse = try JSONDecoder().decode(ForecastsResponse.self, from: data)
+                
                 DispatchQueue.main.async { [self] in
                     
-                                
                     if forecastResponse.current.condition.text == "Sunny" && forecastResponse.current.temp_c >= 15 || forecastResponse.current.condition.text == "Clear" && forecastResponse.current.temp_c >= 15 {
                                     
                         sunnyOrRainyDayBg(colorTop: UIColor(red: 255.0/255.0, green: 198.0/255.0, blue: 0/255.0, alpha: 1.0).cgColor, colorBottom: UIColor(red: 235.0/255.0, green: 115.0/255.0, blue: 32.0/255.0, alpha: 1.0).cgColor)
@@ -122,7 +122,6 @@ class ForecastViewController: UIViewController {
                     for day in 0 ... 2 {
                         maxTemp.append("\(forecastResponse.forecast.forecastday[day].day.maxtemp_c)")
                         minTemp.append("\(forecastResponse.forecast.forecastday[day].day.mintemp_c)")
-                        
                     }
 
                     switch forecastResponse.current.condition.text {
@@ -176,8 +175,6 @@ class ForecastViewController: UIViewController {
         image.image = newImage
     }
     
-
-    
     @IBAction func getBackAction(_ sender: Any) {
         navigationController?.popToRootViewController(animated: true)
     }
@@ -185,6 +182,7 @@ class ForecastViewController: UIViewController {
 
 extension ForecastViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return 3
     }
     
@@ -207,20 +205,16 @@ extension ForecastViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch daysOfWeek[indexPath.item] {
-        case daysOfWeek[indexPath.item]:
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
             
-            if let aboutDayViewController = storyboard.instantiateViewController(identifier: "AboutDayViewController") as? AboutDayViewController {
-                aboutDayViewController.modalPresentationStyle = .fullScreen
+        if let aboutDayViewController = storyboard.instantiateViewController(identifier: "AboutDayViewController") as? AboutDayViewController {
+            
+            aboutDayViewController.modalPresentationStyle = .fullScreen
                 
-                aboutDayViewController.myUrl = myUrl
-                aboutDayViewController.indexPath = indexPath.row
+            aboutDayViewController.myUrl = myUrl
+            aboutDayViewController.indexPath = indexPath.row
  
-                navigationController?.pushViewController(aboutDayViewController, animated: true)
-            }
-        default:
-            print("not found")
+            navigationController?.pushViewController(aboutDayViewController, animated: true)
         }
     }
 }

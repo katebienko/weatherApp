@@ -45,7 +45,7 @@ class ViewController: UIViewController {
         backgroundView()
         checkConnection()
         loadCitiesForSearchJSON()
-        deleteSpacing()
+     //   deleteSpacing()
         tableViewSettings()
     }
     
@@ -61,14 +61,7 @@ class ViewController: UIViewController {
         view.layer.insertSublayer(gradientLayer, at:0)
     }
     
-    private func deleteSpacing() {
-        for name in cityNames {
-            let newString = name.replacingOccurrences(of: " ", with: "%20")
-            addLinkCityToArray(name: newString)
-        }
-    }
-    
-    private func savePathsToJSON() {
+    private func getPathsToJSON() {
             let filesName = try? FileManager.default.contentsOfDirectory(atPath: jsonFolderURL.path)
 
             for jsonFile in filesName! {
@@ -114,7 +107,7 @@ class ViewController: UIViewController {
             alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { [self] (action) in
                 searchBar.isHidden = true
                 
-                savePathsToJSON()
+                getPathsToJSON()
                 setupCollectionView()
             }))
                 
@@ -296,16 +289,16 @@ extension ViewController: UISearchBarDelegate {
 
 extension ViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        self.coordinates = locations.last?.coordinate
+        coordinates = locations.last?.coordinate
+        
         locations.last?.fetchCityAndCountry(completion: { [self] ( city, country, error) in
-            
             cityNames.append(city!)
+            urlsCities.append(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(city!)&days=7")!)
+            
             cityNames.removeDuplicates()
+            urlsCities.removeDuplicates()
             
             UserDefaults.standard.set(cityNames, forKey: "cityNamesKey")
-            
-            urlsCities.append(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(city!)&days=7")!)
-            urlsCities.removeDuplicates()
             
             forecastCollectionView.reloadData()
         })
