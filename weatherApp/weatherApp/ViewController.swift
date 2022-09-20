@@ -47,7 +47,7 @@ class ViewController: UIViewController {
         checkConnection()
         deleteSpacing()
         tableViewSettings()
-        loadListFiles()
+     //   loadListFiles()
     }
     
     private func openJSONfromFile() {
@@ -159,16 +159,16 @@ class ViewController: UIViewController {
         forecastCollectionView.reloadData()
     }
     
-    private func loadListFiles() {
-            if isConnection == false {
-                let filesName = try? FileManager.default.contentsOfDirectory(atPath: jsonFolderURL.path)
-
-                for jsonFile in filesName! {
-                    let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
-                    pathsCitiesJSON.append(fileURL)
-                }
-            }
-        }
+//    private func loadListFiles() {
+//            if isConnection == false {
+//                let filesName = try? FileManager.default.contentsOfDirectory(atPath: jsonFolderURL.path)
+//
+//                for jsonFile in filesName! {
+//                    let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
+//                    pathsCitiesJSON.append(fileURL)
+//                }
+//            }
+//        }
     
     private func loadCitiesForSearchJSON() {
         if let path = Bundle.main.path(forResource: "json_file", ofType: nil) {
