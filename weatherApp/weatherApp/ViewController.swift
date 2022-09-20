@@ -17,7 +17,7 @@ class ViewController: UIViewController {
 
     var cityNames: [String] = UserDefaults.standard.stringArray(forKey: "cityNamesKey") ?? []
     var pathsCitiesJSON: [URL] = []
-    var urlsCities: [URL] = []
+    var urlsCities: [URL] = [].compactMap { URL(string: $0) }
     
     var allCitiesInJSON: [String] = []
     var filteredName: [String]!
@@ -41,13 +41,27 @@ class ViewController: UIViewController {
         if FileManager.default.fileExists(atPath: jsonFolderURL.path) == false {
             try? FileManager.default.createDirectory(at: jsonFolderURL, withIntermediateDirectories: false)
         }
-        
+       
+        loadCitiesForSearchJSON()
         backgroundView()
         checkConnection()
-        loadCitiesForSearchJSON()
-     //   deleteSpacing()
+        deleteSpacing()
         tableViewSettings()
+        loadListFiles()
     }
+    
+    private func openJSONfromFile() {
+            do {
+                let filesName = try FileManager.default.contentsOfDirectory(atPath: jsonFolderURL.path)
+
+                for jsonFile in filesName {
+                    let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
+                    pathsCitiesJSON.append(fileURL)
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     
     private func backgroundView() {
         let colorTop =  UIColor(red: 176.0/255.0, green: 191.0/255.0, blue: 206/255.0, alpha: 1.0).cgColor
@@ -60,6 +74,18 @@ class ViewController: UIViewController {
                    
         view.layer.insertSublayer(gradientLayer, at:0)
     }
+    
+    private func addLinkCityToArray(name: String) {
+        let newString = name.replacingOccurrences(of: " ", with: "%20")
+        urlsCities.append(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(newString)&days=7")!)
+    }
+    
+    private func deleteSpacing() {
+            for name in cityNames {
+                let newString = name.replacingOccurrences(of: " ", with: "%20")
+                addLinkCityToArray(name: newString)
+            }
+        }
     
     private func getPathsToJSON() {
             let filesName = try? FileManager.default.contentsOfDirectory(atPath: jsonFolderURL.path)
@@ -133,10 +159,16 @@ class ViewController: UIViewController {
         forecastCollectionView.reloadData()
     }
     
-    private func addLinkCityToArray(name: String) {
-        let newString = name.replacingOccurrences(of: " ", with: "%20")
-        urlsCities.append(URL(string:"https://api.weatherapi.com/v1/forecast.json?key=e5c76c2a09fa483da4e65137222306&q=\(newString)&days=7")!)
-    }
+    private func loadListFiles() {
+            if isConnection == false {
+                let filesName = try? FileManager.default.contentsOfDirectory(atPath: jsonFolderURL.path)
+
+                for jsonFile in filesName! {
+                    let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
+                    pathsCitiesJSON.append(fileURL)
+                }
+            }
+        }
     
     private func loadCitiesForSearchJSON() {
         if let path = Bundle.main.path(forResource: "json_file", ofType: nil) {
