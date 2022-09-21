@@ -13,11 +13,11 @@ class ViewController: UIViewController {
     let decoder = JSONDecoder() // превращает данные в объект
     let encoder = JSONEncoder() // превращает объект в данные
     
-    var isConnection: Bool = true
+    var isConnection: Bool = UserDefaults.standard.object(forKey: "isConnection") as? Bool ?? true
 
     var cityNames: [String] = UserDefaults.standard.stringArray(forKey: "cityNamesKey") ?? []
     var pathsCitiesJSON: [URL] = []
-    var urlsCities: [URL] = []
+    var urlsCities: [URL] = [].compactMap { URL(string: $0) }
     
     var allCitiesInJSON: [String] = []
     var filteredName: [String]!
@@ -28,12 +28,12 @@ class ViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
     
     override func viewWillAppear(_ animated: Bool) {
-       showOrHideSearchBar()
+        showOrNotSearchBar()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         if FileManager.default.fileExists(atPath: jsonFolderURL.path) == false {
             try? FileManager.default.createDirectory(at: jsonFolderURL, withIntermediateDirectories: false)
         }
@@ -44,29 +44,6 @@ class ViewController: UIViewController {
         deleteSpacing()
         tableViewSettings()
     }
-    
-    private func showOrHideSearchBar() {
-        if UserDefaults.standard.object(forKey: "isConnection") as? Bool == false {
-            searchBar.isHidden = true
-        } else if UserDefaults.standard.object(forKey: "isConnection") == nil && Reachability.isConnectedToNetwork() {
-            searchBar.isHidden = false
-        } else if UserDefaults.standard.object(forKey: "isConnection") as? Bool == true {
-            searchBar.isHidden = false
-        }
-    }
-    
-    private func openJSONfromFile() {
-            do {
-                let filesName = try FileManager.default.contentsOfDirectory(atPath: jsonFolderURL.path)
-
-                for jsonFile in filesName {
-                    let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
-                    pathsCitiesJSON.append(fileURL)
-                }
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
     
     private func backgroundView() {
         let colorTop =  UIColor(red: 176.0/255.0, green: 191.0/255.0, blue: 206/255.0, alpha: 1.0).cgColor
@@ -108,8 +85,7 @@ class ViewController: UIViewController {
         
         do {
             let fileURL = jsonFolderURL.appendingPathComponent("savedCities\(String(describing: forecastResponse?.location.name)).json")
-           // print(fileURL.path)
-
+            //print(fileURL.path)
             try JSONSerialization.data(withJSONObject: json!, options: .prettyPrinted).write(to: fileURL)
         } catch {
             print(error)
@@ -154,6 +130,22 @@ class ViewController: UIViewController {
         searchBar.delegate = self
         filteredName = allCitiesInJSON
     }
+    
+    private func showOrNotSearchBar() {
+        if Reachability.isConnectedToNetwork() && UserDefaults.standard.object(forKey: "loadFromJSON") == nil {
+            searchBar.isHidden = false
+        } else if Reachability.isConnectedToNetwork() && UserDefaults.standard.object(forKey: "loadFromJSON") as? Bool == false {
+            searchBar.isHidden = true
+        } else if Reachability.isConnectedToNetwork() && UserDefaults.standard.object(forKey: "loadFromJSON") as? Bool == true {
+            searchBar.isHidden = false
+        } else if !Reachability.isConnectedToNetwork() && UserDefaults.standard.object(forKey: "loadFromJSON") == nil {
+            searchBar.isHidden = true
+        } else if !Reachability.isConnectedToNetwork() && UserDefaults.standard.object(forKey: "loadFromJSON") as? Bool == false {
+            searchBar.isHidden = true
+        } else if !Reachability.isConnectedToNetwork() && UserDefaults.standard.object(forKey: "loadFromJSON") as? Bool == true {
+            searchBar.isHidden = true
+        }
+    }
 
     private func setupCollectionView() {
         let key = CitiesCollectionViewCell.reuseIdentifier
@@ -187,7 +179,6 @@ class ViewController: UIViewController {
 
 extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
         return cityNames.count
     }
         
@@ -290,6 +281,7 @@ extension ViewController: UISearchBarDelegate {
         
         for city in allCitiesInJSON {
             if city.uppercased().contains(searchText.uppercased()) {
+                //added cities witch contain letters to array
                 filteredName.append(city)
             }
         }

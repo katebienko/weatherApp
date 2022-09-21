@@ -3,7 +3,7 @@ import UIKit
 class ForecastViewController: UIViewController {
     
     var myUrl = URL(string: "")
-    var isConnection: Bool = true
+    var isConnection: Bool = UserDefaults.standard.object(forKey: "isConnection") as? Bool ?? true
     var daysOfWeek: [String] = []
     var maxTemp: [String] = []
     var minTemp: [String] = []
