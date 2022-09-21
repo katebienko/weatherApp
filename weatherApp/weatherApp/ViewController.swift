@@ -13,11 +13,11 @@ class ViewController: UIViewController {
     let decoder = JSONDecoder() // превращает данные в объект
     let encoder = JSONEncoder() // превращает объект в данные
     
-    var isConnection: Bool = UserDefaults.standard.object(forKey: "isConnection") as? Bool ?? true
+    var isConnection: Bool = true
 
     var cityNames: [String] = UserDefaults.standard.stringArray(forKey: "cityNamesKey") ?? []
     var pathsCitiesJSON: [URL] = []
-    var urlsCities: [URL] = [].compactMap { URL(string: $0) }
+    var urlsCities: [URL] = []
     
     var allCitiesInJSON: [String] = []
     var filteredName: [String]!
@@ -28,16 +28,12 @@ class ViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
     
     override func viewWillAppear(_ animated: Bool) {
-        if UserDefaults.standard.object(forKey: "isConnection") as? Bool == false {
-            searchBar.isHidden = true
-        } else {
-            searchBar.isHidden = false
-        }
+       showOrHideSearchBar()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         if FileManager.default.fileExists(atPath: jsonFolderURL.path) == false {
             try? FileManager.default.createDirectory(at: jsonFolderURL, withIntermediateDirectories: false)
         }
@@ -47,7 +43,16 @@ class ViewController: UIViewController {
         checkConnection()
         deleteSpacing()
         tableViewSettings()
-     //   loadListFiles()
+    }
+    
+    private func showOrHideSearchBar() {
+        if UserDefaults.standard.object(forKey: "isConnection") as? Bool == false {
+            searchBar.isHidden = true
+        } else if UserDefaults.standard.object(forKey: "isConnection") == nil && Reachability.isConnectedToNetwork() {
+            searchBar.isHidden = false
+        } else if UserDefaults.standard.object(forKey: "isConnection") as? Bool == true {
+            searchBar.isHidden = false
+        }
     }
     
     private func openJSONfromFile() {
@@ -103,7 +108,7 @@ class ViewController: UIViewController {
         
         do {
             let fileURL = jsonFolderURL.appendingPathComponent("savedCities\(String(describing: forecastResponse?.location.name)).json")
-            //print(fileURL.path)
+           // print(fileURL.path)
 
             try JSONSerialization.data(withJSONObject: json!, options: .prettyPrinted).write(to: fileURL)
         } catch {
@@ -159,17 +164,6 @@ class ViewController: UIViewController {
         forecastCollectionView.reloadData()
     }
     
-//    private func loadListFiles() {
-//            if isConnection == false {
-//                let filesName = try? FileManager.default.contentsOfDirectory(atPath: jsonFolderURL.path)
-//
-//                for jsonFile in filesName! {
-//                    let fileURL = self.jsonFolderURL.appendingPathComponent("\(jsonFile)")
-//                    pathsCitiesJSON.append(fileURL)
-//                }
-//            }
-//        }
-    
     private func loadCitiesForSearchJSON() {
         if let path = Bundle.main.path(forResource: "json_file", ofType: nil) {
             let url = URL(fileURLWithPath: path)
@@ -193,6 +187,7 @@ class ViewController: UIViewController {
 
 extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
         return cityNames.count
     }
         
@@ -295,7 +290,6 @@ extension ViewController: UISearchBarDelegate {
         
         for city in allCitiesInJSON {
             if city.uppercased().contains(searchText.uppercased()) {
-                //added cities witch contain letters to array
                 filteredName.append(city)
             }
         }

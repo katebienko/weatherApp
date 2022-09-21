@@ -4,7 +4,6 @@ class AboutDayViewController: UIViewController {
     
     var indexPath: Int = 0
     var myUrl = URL(string: "")
-    var isConnection: Bool = UserDefaults.standard.object(forKey: "isConnection") as? Bool ?? true
     
     @IBOutlet private weak var daysName: UILabel!
     @IBOutlet private weak var getBackButton: UIButton!
