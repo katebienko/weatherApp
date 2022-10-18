@@ -28,7 +28,11 @@ class ViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
     
     override func viewWillAppear(_ animated: Bool) {
-        showOrNotSearchBar()
+        if UserDefaults.standard.object(forKey: "isConnection") as? Bool == false {
+            searchBar.isHidden = true
+        } else {
+            searchBar.isHidden = false
+        }
     }
     
     override func viewDidLoad() {
@@ -86,6 +90,7 @@ class ViewController: UIViewController {
         do {
             let fileURL = jsonFolderURL.appendingPathComponent("savedCities\(String(describing: forecastResponse?.location.name)).json")
             //print(fileURL.path)
+
             try JSONSerialization.data(withJSONObject: json!, options: .prettyPrinted).write(to: fileURL)
         } catch {
             print(error)
@@ -129,22 +134,6 @@ class ViewController: UIViewController {
         
         searchBar.delegate = self
         filteredName = allCitiesInJSON
-    }
-    
-    private func showOrNotSearchBar() {
-        if Reachability.isConnectedToNetwork() && UserDefaults.standard.object(forKey: "loadFromJSON") == nil {
-            searchBar.isHidden = false
-        } else if Reachability.isConnectedToNetwork() && UserDefaults.standard.object(forKey: "loadFromJSON") as? Bool == false {
-            searchBar.isHidden = true
-        } else if Reachability.isConnectedToNetwork() && UserDefaults.standard.object(forKey: "loadFromJSON") as? Bool == true {
-            searchBar.isHidden = false
-        } else if !Reachability.isConnectedToNetwork() && UserDefaults.standard.object(forKey: "loadFromJSON") == nil {
-            searchBar.isHidden = true
-        } else if !Reachability.isConnectedToNetwork() && UserDefaults.standard.object(forKey: "loadFromJSON") as? Bool == false {
-            searchBar.isHidden = true
-        } else if !Reachability.isConnectedToNetwork() && UserDefaults.standard.object(forKey: "loadFromJSON") as? Bool == true {
-            searchBar.isHidden = true
-        }
     }
 
     private func setupCollectionView() {

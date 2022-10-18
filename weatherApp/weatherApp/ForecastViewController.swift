@@ -198,7 +198,7 @@ extension ForecastViewController: UITableViewDataSource, UITableViewDelegate {
         }
         
         let bgColorView = UIView()
-        bgColorView.backgroundColor = UIColor.white.withAlphaComponent(0.3)        
+        bgColorView.backgroundColor = UIColor.white.withAlphaComponent(0.3)
         cell.selectedBackgroundView = bgColorView
         
         return cell
